@@ -1,5 +1,6 @@
 /** ------------------------------------------------------------
  * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright © 2023-2024 Aoran Zeng, Heng Guo
  * -------------------------------------------------------------
  * File          : source.h
  * Authors       : Aoran Zeng    <ccmywish@qq.com>
@@ -7,7 +8,7 @@
  * Contributors  : Shengwei Chen <414685209@qq.com>
  *               |
  * Created on    : <2023-08-29>
- * Last modified : <2024-07-24>
+ * Last modified : <2024-08-09>
  *
  * 镜像站与换源信息
  * ------------------------------------------------------------*/
@@ -33,50 +34,52 @@ typedef struct {
  * 我们目前根据 https://github.com/mirrorz-org/oh-my-mirrorz 挑选速度前10位
  */
 MirrorSite
-  MirrorZ       = {"mirrorz", "MirrorZ",       "MirrorZ 校园网镜像站",       "https://mirrors.cernet.edu.cn/",  NULL},
+MirrorZ       = {"mirrorz", "MirrorZ",       "MirrorZ 校园网镜像站",       "https://mirrors.cernet.edu.cn/",  NULL},
 
-  Tuna          = {"tuna",    "TUNA",          "清华大学开源软件镜像站",     "https://mirrors.tuna.tsinghua.edu.cn/",
-                   "https://mirrors.tuna.tsinghua.edu.cn/speedtest/1000mb.bin"},
+Tuna          = {"tuna",    "TUNA",          "清华大学开源软件镜像站",     "https://mirrors.tuna.tsinghua.edu.cn/",
+                 "https://mirrors.tuna.tsinghua.edu.cn/speedtest/1000mb.bin"},
 
-  Sjtug_Zhiyuan = {"sjtu",    "SJTUG-zhiyuan", "上海交通大学致远镜像站",     "https://mirrors.sjtug.sjtu.edu.cn/",
-                   "https://mirrors.sjtug.sjtu.edu.cn/ctan" Big_File_ctan},
+Sjtug_Zhiyuan = {"sjtu",    "SJTUG-zhiyuan", "上海交通大学致远镜像站",     "https://mirrors.sjtug.sjtu.edu.cn/",
+                 "https://mirrors.sjtug.sjtu.edu.cn/ctan" Big_File_ctan},
 
-  Zju           = {"zju",     "ZJU",           "浙江大学开源软件镜像站",     "https://mirrors.zju.edu.cn/",
-                   "https://mirrors.zju.edu.cn/debian" Big_File_debian},
+Zju           = {"zju",     "ZJU",           "浙江大学开源软件镜像站",     "https://mirrors.zju.edu.cn/",
+                 "https://mirrors.zju.edu.cn/debian" Big_File_debian},
 
-  Lzuoss        = {"lzu",     "LZUOSS",        "兰州大学开源社区镜像站",     "https://mirror.lzu.edu.cn/",
-                   "https://mirror.lzu.edu.cn/CTAN" Big_File_ctan},
+Lzuoss        = {"lzu",     "LZUOSS",        "兰州大学开源社区镜像站",     "https://mirror.lzu.edu.cn/",
+                 "https://mirror.lzu.edu.cn/CTAN" Big_File_ctan},
 
-  Jlu           = {"jlu",     "JLU",           "吉林大学开源镜像站",         "https://mirrors.jlu.edu.cn/",
-                   "https://mirrors.jlu.edu.cn/_static/speedtest.bin"},
+Jlu           = {"jlu",     "JLU",           "吉林大学开源镜像站",         "https://mirrors.jlu.edu.cn/",
+                 "https://mirrors.jlu.edu.cn/_static/speedtest.bin"},
 
-  Bfsu          = {"bfsu",    "BFSU",          "北京外国语大学开源软件镜像站","https://mirrors.bfsu.edu.cn/",
-                   "https://mirrors.bfsu.edu.cn/speedtest/1000mb.bin"},
+Bfsu          = {"bfsu",    "BFSU",          "北京外国语大学开源软件镜像站","https://mirrors.bfsu.edu.cn/",
+                 "https://mirrors.bfsu.edu.cn/speedtest/1000mb.bin"},
 
-  Pku           = {"pku",     "PKU",           "北京大学开源镜像站",         "https://mirrors.pku.edu.cn/",
-                   "https://mirrors.pku.edu.cn/debian" Big_File_debian},
+Pku           = {"pku",     "PKU",           "北京大学开源镜像站",         "https://mirrors.pku.edu.cn/",
+                 "https://mirrors.pku.edu.cn/debian" Big_File_debian},
 
-  Bjtu          = {"bjtu",    "BJTU",          "北京交通大学自由与开源软件镜像站", "https://mirror.bjtu.edu.cn/",
-                   "https://mirror.bjtu.edu.cn/archlinux" Big_File_archlinux},
+Bjtu          = {"bjtu",    "BJTU",          "北京交通大学自由与开源软件镜像站", "https://mirror.bjtu.edu.cn/",
+                 "https://mirror.bjtu.edu.cn/archlinux" Big_File_archlinux},
 
-  Sustech       = {"sustech", "SUSTech",       "南方科技大学开源软件镜像站",  "https://mirrors.sustech.edu.cn/",
-                   "https://mirrors.sustech.edu.cn/site/speedtest/1000mb.bin"},
+Sustech       = {"sustech", "SUSTech",       "南方科技大学开源软件镜像站",  "https://mirrors.sustech.edu.cn/",
+                 "https://mirrors.sustech.edu.cn/site/speedtest/1000mb.bin"},
 
-  Ustc          = {"ustc",    "USTC",          "中国科学技术大学开源镜像站",  "https://mirrors.ustc.edu.cn/",
-                   "https://mirrors.ustc.edu.cn/CTAN" Big_File_ctan},
+Ustc          = {"ustc",    "USTC",          "中国科学技术大学开源镜像站",  "https://mirrors.ustc.edu.cn/",
+                 "https://mirrors.ustc.edu.cn/CTAN" Big_File_ctan},
 
-  Hust          = {"hust",    "HUST",          "华中科技大学开源镜像站",     "https://mirrors.hust.edu.cn/",
-                    "https://mirrors.hust.edu.cn/debian" Big_File_debian},
+Hust          = {"hust",    "HUST",          "华中科技大学开源镜像站",     "https://mirrors.hust.edu.cn/",
+                 "https://mirrors.hust.edu.cn/debian" Big_File_debian},
 
 // 速度暂时处于10位以后，但是目前可用的源
-  Nju           = {"nju",     "NJU",           "南京大学开源镜像站",         "https://mirrors.nju.edu.cn/",
-                   "https://mirrors.nju.edu.cn/archlinux" Big_File_archlinux};
+Nju           = {"nju",     "NJU",           "南京大学开源镜像站",         "https://mirrors.nju.edu.cn/",
+                 "https://mirrors.nju.edu.cn/archlinux" Big_File_archlinux};
 
-
-// @ccmywish: [2023-09-05] 我只使用了不到5次，重庆大学镜像站就把我的ip封杀了，对用户来说封杀策略过严，暂时不可靠，暂时不用
-//
-//  Cqu           = {"cqu",     "CQU",           "重庆大学开源软件镜像站",     "https://mirrors.cqu.edu.cn/",
-//                  "https://mirrors.cqu.edu.cn/speedtest/1000mb.bin"};
+/**
+ * @note by:ccmywish {
+ *   [2023-09-05] 我只使用了不到5次，重庆大学镜像站就把我的ip封杀了，对用户来说封杀策略过严，暂时不可靠，暂时不用
+ * }
+ */
+//  Cqu       = {"cqu",     "CQU",           "重庆大学开源软件镜像站",     "https://mirrors.cqu.edu.cn/",
+//               "https://mirrors.cqu.edu.cn/speedtest/1000mb.bin"};
 
 
 
@@ -98,42 +101,15 @@ MirrorSite
   Volcengine = {"volc",  "Volcengine",   "火山引擎开源软件镜像站", "https://developer.volcengine.com/mirror/",
               "https://mirrors.volces.com/debian" Big_File_debian },
 
-  // 没有找到 DaoCloud 合适的下载链接，先随便给一个，以规避 chsrc 自动测速时所有 dockerhub 镜像站都没有测速链接带来的 bug
-  DaoCloud = {"daocloud", "DaoCloud","上海道客网络科技有限公司", "https://www.daocloud.io/",
-              "https://qiniu-download-public.daocloud.io/DaoCloud_Enterprise/dce5/offline-community-v0.18.0-amd64.tar"},
-
   Netease  = {"netease", "Netease",  "网易开源镜像站",      "https://mirrors.163.com/",
               "https://mirrors.163.com/deepin-cd" Big_File_deepin},
 
   Sohu     = {"sohu",    "SOHU",     "搜狐开源镜像站",      "https://mirrors.sohu.com/",
-              "https://mirrors.sohu.com/deepin-cd" Big_File_deepin},
-
-  Api7     = {"api7",    "api7.ai",  "深圳支流科技有限公司", "https://www.apiseven.com/", NULL},
-
-  Fit2Cloud = {"fit2cloud", "FIT2CLOUD", "杭州飞致云信息科技有限公司", "https://www.fit2cloud.com/", NULL};
+              "https://mirrors.sohu.com/deepin-cd" Big_File_deepin};
 
 // 开源社区
 MirrorSite
-  RubyChina = {"rubychina",    "RubyChina",    "Ruby China 社区",    "https://gems.ruby-china.com/",
-               "https://gems.ruby-china.com/rubygems/gems/nokogiri-1.15.0-java.gem"}, // 9.9 MB
-
-  NpmMirror = {"npmmirror",    "npmmirror",    "npmmirror (阿里云赞助)",    "https://npmmirror.com/",
-               // 注意，这个是跳转后的地址，不确定未来会不会改变
-               "https://cdn.npmmirror.com/packages/%40tensorflow/tfjs/4.10.0/tfjs-4.10.0.tgz"}, // 29MB
-
-  GoProxyCN = {"goproxy.cn",   "Goproxy.cn",   "Goproxy.cn (七牛云赞助)",   "https://goproxy.cn/",
-               "https://goproxy.cn/github.com/aws/aws-sdk-go/@v/v1.45.2.zip"},  // 30 MB
-
-  GoProxyIO = {"goproxy.io",   "GOPROXY.IO",   "GOPROXY.IO",         "https://goproxy.io/",
-               "https://goproxy.io/github.com/aws/aws-sdk-go/@v/v1.45.2.zip"},   // 30 MB
-
-  NugetOrg   = {"nuget.org",   "NuGet Org",    "Nuget Organization", "https://www.nuget.org/",              NULL},
-  EmacsChina = {"emacschina",  "EmacsChina",   "Emacs China 社区",    "https://elpamirror.emacs-china.org/", NULL},
-
-  Huecker    = {"huecker",     "(Russia) Huecker", "俄罗斯 Huecker.io",   "https://huecker.io/",
-                // 同 DaoCloud，没有合适的下载链接，先随便给一个，以避免 bug
-                "https://huecker.io/en/use.html"};
-
+  NugetOrg   = {"nuget.org",   "NuGet Org",    "Nuget Organization", "https://www.nuget.org/",  NULL};
 
 MirrorSite
   Upstream = {"upstream",     "Upstream",     "上游默认源",     NULL,     NULL};
@@ -142,16 +118,6 @@ MirrorSite
 
 
 
-MirrorSite*
-available_mirrors[] = {
-  &MirrorZ, &Tuna, &Sjtug_Zhiyuan, &Zju, &Lzuoss, &Jlu, &Bfsu, &Pku, &Bjtu, &Sustech, &Ustc, &Hust, &Nju, // &Cqu,
-  &Ali,  &Tencent, &Huawei, &Volcengine,  &Netease, &Sohu, &Api7, &Fit2Cloud,
-  &RubyChina, &EmacsChina, &NpmMirror, &GoProxyCN, &GoProxyIO,
-  // 暂不支持 &NugetOrg
-
-  // 不要列出 &Upstream 和 &UserDdefine
-};
-
 
 typedef struct {
   const MirrorSite *mirror;
@@ -159,159 +125,10 @@ typedef struct {
 } SourceInfo;
 
 
-/**
- * 2024-05-25 更新
- *
- * @note
- * 下面的源，并非都实现正确，
- * BFSU 和 Tuna 以及 阿里的镜像都有问题，会循环遍历一个gem的所有版本，导致安装时间相当长
- *
- * @note 网络情况
- * 若实现正确:
- * 1. 目前北外最快最稳定
- * 2. 腾讯挺快，个别时候不稳定，但稳定时能达到4.5MB甚至以上
- * 3. tuna 有时快有时慢，不稳定，一般在3MB以下
- * 4. rubychina 有时快有时慢，快时一般在 2MB以下，慢时一般在1MB以下
- * 5. 阿里云最不稳定，经常最慢
- */
+
 static SourceInfo
-pl_ruby_sources[] = {
-  {&Upstream,  "https://rubygems.org"},
-  {&Huawei,    "https://mirrors.huaweicloud.com/repository/rubygems/"},
-  {&Tencent,   "https://mirrors.tencent.com/rubygems/"},
-  {&RubyChina, "https://gems.ruby-china.com/"}
-
-  // {&Bfsu,      "https://mirrors.bfsu.edu.cn/rubygems/"},
-  // {&Tuna,      "https://mirrors.tuna.tsinghua.edu.cn/rubygems/"},
-  // {&Ali,       "https://mirrors.aliyun.com/rubygems/"},
-},
-
-
 /**
- * 2024-05-24 更新
- *
- * @note 不要添加Zju，浙大的pypi在校外访问会自动转向Tuna
- */
-pl_python_sources[] = {
-  {&Upstream,      "https://pypi.org/simple"},
-  {&Bfsu,          "https://mirrors.bfsu.edu.cn/pypi/web/simple"},
-  {&Lzuoss,        "https://mirror.lzu.edu.cn/pypi/web/simple"},
-  {&Jlu,           "https://mirrors.jlu.edu.cn/pypi/web/simple"},
-  {&Sjtug_Zhiyuan, "https://mirror.sjtu.edu.cn/pypi/web/simple"},
-  {&Tuna,          "https://pypi.tuna.tsinghua.edu.cn/simple"},
-  {&Ali,           "https://mirrors.aliyun.com/pypi/simple/"},
-  {&Tencent,       "https://mirrors.cloud.tencent.com/pypi/simple"},
-  {&Huawei,        "https://mirrors.huaweicloud.com/repository/pypi/simple"},
-  {&Hust,          "https://mirrors.hust.edu.cn/pypi/web/simple"}
-  // {&Netease,    "https://mirrors.163.com/.help/pypi.html"} // 不用，24小时更新一次
-},
-
-
-
-/**
- * 2024-04-18 更新
- *
- * Sjtug, Tuna, Lzuoss, Jlu, Bfsu, 网易，搜狐 都没有
- *
- * @note 腾讯软件源虽然有npm的名，但名存实亡
- */
-pl_nodejs_sources[] = {
-  {&Upstream,       NULL},
-  {&NpmMirror,     "https://registry.npmmirror.com"},
-  {&Huawei,        "https://mirrors.huaweicloud.com/repository/npm/"},
-  {&Zju,           "https://mirrors.zju.edu.cn/npm"}
-},
-
-
-/**
- * 2024-05-24 更新
- *
- * 参考: https://help.mirrors.cernet.edu.cn/CPAN/
- */
-pl_perl_sources[] = {
-  {&Upstream,       NULL},
-  {&Bfsu,          "https://mirrors.bfsu.edu.cn/CPAN/"},
-  {&Tuna,          "https://mirrors.tuna.tsinghua.edu.cn/CPAN/"},
-  {&Bjtu,          "https://mirror.bjtu.edu.cn/cpan/"},
-  {&Hust,          "https://mirrors.hust.edu.cn/CPAN/"},
-  {&Ali,           "https://mirrors.aliyun.com/CPAN/"},
-  {&Lzuoss,        "https://mirror.lzu.edu.cn/CPAN/"}
-},
-
-
-
-/**
- * 2024-04-18 更新
- *
- * @note 缺少教育网或开源社区软件源
- */
-pl_php_sources[] = {
-  {&Upstream,       NULL},
-  {&Ali,           "https://mirrors.aliyun.com/composer/"},
-  {&Tencent,       "https://mirrors.tencent.com/composer/"},
-  {&Huawei,        "https://mirrors.huaweicloud.com/repository/php/"}
-},
-
-
-
-/**
- * 2023-09-27 更新
- *
- * @note 目前只有唯一一个源
- */
-pl_lua_sources[] = {
-  {&Upstream,       NULL},
-  {&Api7,          "https://luarocks.cn"},
-},
-
-
-/**
- * 2024-04-18 更新
- *
- * @note 缺少教育网软件源
- */
-pl_go_sources[] = {
-  {&Upstream,       NULL},
-  {&GoProxyCN,     "https://goproxy.cn"},
-  {&Ali,           "https://mirrors.aliyun.com/goproxy/"},
-  {&Huawei,        "https://mirrors.huaweicloud.com/goproxy/"},
-  {&GoProxyIO,     "https://goproxy.io"}
-},
-
-
-/**
- * 2024-05-24 更新
- *
- * @note 缺少商业公司或开源社区软件源
- *
- * @note 以下都支持稀疏索引，我们换源时都将默认添加 `sparse+`
- */
-pl_rust_sources[] = {
-  {&Upstream,       NULL},
-  {&Sjtug_Zhiyuan, "https://mirrors.sjtug.sjtu.edu.cn/crates.io-index/"},
-  {&Tuna,          "https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"},
-  {&Bfsu,          "https://mirrors.bfsu.edu.cn/crates.io-index/"},
-  {&Ustc,          "https://mirrors.ustc.edu.cn/crates.io-index/"},
-  {&Hust,          "https://mirrors.hust.edu.cn/crates.io-index/"}
-},
-
-
-/**
- * 2024-04-18 更新
- *
- * @note 缺少教育网或开源社区软件源
- */
-pl_java_sources[] = {
-  {&Upstream,       NULL},
-  {&Ali,           "https://maven.aliyun.com/repository/public/"},
-  {&Huawei,        "https://mirrors.huaweicloud.com/repository/maven/"},
-  {&Netease,       "http://mirrors.163.com/maven/repository/maven-public/"} // 网易的24小时更新一次
-},
-
-
-/**
- * 2023-09-10 更新
- *
+ * @time 2023-09-10 更新
  * @note 不太好换，且用户可能不多，我们暂时只给用户提供文档
  */
 pl_clojure_sources[] = {
@@ -322,10 +139,11 @@ pl_clojure_sources[] = {
 
 
 /**
- * 2024-04-18 更新
- *
- * @note 暂时未实现该换源功能，可参照
- *    https://mirrors.huaweicloud.com/mirrorDetail/5ebf85de07b41baf6d0882ab?mirrorName=nuget&catalog=language
+ * @time 2024-04-18 更新
+ * @note {
+ *   暂时未实现该换源功能，可参照
+ *   https://mirrors.huaweicloud.com/mirrorDetail/5ebf85de07b41baf6d0882ab?mirrorName=nuget&catalog=language
+ * }
  */
 pl_dotnet_sources[] = {
   {&Upstream,       NULL},
@@ -336,13 +154,13 @@ pl_dotnet_sources[] = {
 
 
 /**
- * 2023-09-10 更新
- *
- * @note 我们这里挑选的必须也支持 Flutter
- *
- * 我们将会在setsrc函数中生成
- * 1. https://mirrors.tuna.tsinghua.edu.cn/dart-pub
- * 2. https://mirrors.tuna.tsinghua.edu.cn/flutter
+ * @time 2023-09-10 更新
+ * @note {
+ *   我们这里挑选的必须也支持 Flutter
+ *   我们将会在setsrc函数中生成
+ *     1. https://mirrors.tuna.tsinghua.edu.cn/dart-pub
+ *     2. https://mirrors.tuna.tsinghua.edu.cn/flutter
+ * }
  */
 pl_dart_sources[] = {
   {&Upstream,       NULL},
@@ -355,7 +173,7 @@ pl_dart_sources[] = {
 
 
 /**
- * 2023-09-10 更新
+ * @time 2023-09-10 更新
  */
 pl_haskell_sources[] = {
   {&Upstream,       NULL},
@@ -367,7 +185,7 @@ pl_haskell_sources[] = {
 
 
 /**
- * 2023-09-15 更新
+ * @time 2023-09-15 更新
  */
 pl_ocaml_sources[] = {
   {&Upstream,       NULL},
@@ -378,10 +196,11 @@ pl_ocaml_sources[] = {
 
 
 /**
- * 2023-09-04 更新
- *
- * @note 以下注释的，是不含有bioconductor的镜像站，
- *       我们在换cran的同时，也直接帮助用户换bioconductor
+ * @time 2023-09-04 更新
+ * @note {
+ *   以下注释的，是不含有bioconductor的镜像站，
+ *   我们在换cran的同时，也直接帮助用户换bioconductor
+ * }
  */
 pl_r_sources[] = {
   {&Upstream,       NULL},
@@ -395,8 +214,7 @@ pl_r_sources[] = {
 
 
 /**
- * 2023-09-05 更新
- *
+ * @time 2023-09-05 更新
  * @note 缺少商业公司或开源社区软件源
  */
 pl_julia_sources[] = {
@@ -411,7 +229,7 @@ pl_julia_sources[] = {
 
 
 /**
- * 2024-06-12 更新
+ * @time 2024-06-12 更新
  */
 static SourceInfo
 os_ubuntu_sources[] = {
@@ -429,9 +247,8 @@ os_ubuntu_sources[] = {
 
 
 /**
- * 2023-09-29 更新
- *
- * @note: 实际上镜像站里的内容和Ubuntu的不太一样
+ * @time 2023-09-29 更新
+ * @note 实际上镜像站里的内容和Ubuntu的不太一样
  */
 os_mint_sources[] = {
   {&Upstream,       NULL},
@@ -442,9 +259,8 @@ os_mint_sources[] = {
 
 
 /**
- * 2023-09-06 更新
- *
- * TODO: 1. 源并不完整，且未经测试是否有效
+ * @time 2023-09-06 更新
+ * @note 源并不完整，且未经测试是否有效
  */
 os_deepin_sources[] = {
   {&Upstream,       NULL},
@@ -459,7 +275,7 @@ os_deepin_sources[] = {
 
 
 /**
- * 2024-06-12 更新
+ * @time 2024-06-12 更新
  */
 os_debian_sources[] = {
   {&Upstream,       NULL},
@@ -475,9 +291,8 @@ os_debian_sources[] = {
 
 
 /**
- * 2023-09-02 更新
- *
- * TODO: 1. 源并不完整，且未经测试是否有效
+ * @time 2023-09-02 更新
+ * @note 源并不完整，且未经测试是否有效
  */
 os_fedora_sources[] = {
   {&Upstream,       NULL},
@@ -492,7 +307,7 @@ os_fedora_sources[] = {
 
 
 /**
- * 2024-06-12 更新
+ * @time 2024-06-12 更新
  */
 os_kali_sources[] = {
   {&Upstream,       NULL},
@@ -509,7 +324,7 @@ os_kali_sources[] = {
 
 
 /**
- * 2024-07-03 更新
+ * @time 2024-07-03 更新
  * @note 不要给后面加 / ，因为ARM情况下，还要额外加一个 arm 后缀
  */
 os_arch_sources[] = {
@@ -526,8 +341,7 @@ os_arch_sources[] = {
 
 
 /**
- * 2024-07-03 更新
- *
+ * @time 2024-07-03 更新
  * @note 根据 GitHub:@zheng7fu2 建议，拆分 archlinuxcn 出来
  */
 os_archlinuxcn_sources[] = {
@@ -542,9 +356,8 @@ os_archlinuxcn_sources[] = {
 
 
 /**
- * 2023-09-05 更新
- *
- * TODO: 1. 源并不完整，且未经测试是否有效
+ * @time 2023-09-05 更新
+ * @note 源并不完整，且未经测试是否有效
  */
 os_gentoo_sources[] = {
   {&Upstream,       NULL},
@@ -559,7 +372,7 @@ os_gentoo_sources[] = {
 
 
 /**
- * 2024-06-12 更新
+ * @time 2024-06-12 更新
  */
 os_opensuse_sources[] = {
   {&Upstream,       NULL},
@@ -575,9 +388,8 @@ os_opensuse_sources[] = {
 
 
 /**
- * 2024-04-18 更新
- *
- * TODO: 源并不完整，且未经测试是否有效
+ * @time 2024-04-18 更新
+ * @note 源并不完整，且未经测试是否有效
  */
 os_msys2_sources[] = {
   {&Upstream,       NULL},
@@ -593,7 +405,7 @@ os_msys2_sources[] = {
 
 
 /**
- * 2024-06-12 更新
+ * @time 2024-06-12 更新
  */
 os_rocky_sources[] = {
   {&Upstream,        NULL},
@@ -609,7 +421,7 @@ os_rocky_sources[] = {
 
 
 /**
- * 2024-06-12 更新
+ * @time 2024-06-12 更新
  */
 os_alma_sources[] = {
   {&Upstream,       NULL},
@@ -623,7 +435,7 @@ os_alma_sources[] = {
 
 
 /**
- * 2024-04-18 更新
+ * @time 2024-04-18 更新
  */
 os_alpine_sources[] = {
   {&Upstream,       NULL},
@@ -639,7 +451,7 @@ os_alpine_sources[] = {
 
 
 /**
- * 2023-09-24 更新
+ * @time 2023-09-24 更新
  */
 os_void_sources[] = {
   {&Upstream,       NULL},
@@ -650,7 +462,7 @@ os_void_sources[] = {
 
 
 /**
- * 2023-09-29 更新
+ * @time 2023-09-29 更新
  */
 os_solus_sources[] = {
   {&Upstream,       NULL},
@@ -661,7 +473,7 @@ os_solus_sources[] = {
 
 
 /**
- * 2023-09-29 更新
+ * @time 2023-09-29 更新
  */
 os_linuxlite_sources[] = {
   {&Upstream,       NULL},
@@ -670,7 +482,7 @@ os_linuxlite_sources[] = {
 
 
 /**
- * 2023-09-29 更新
+ * @time 2023-09-29 更新
  */
 os_trisquel_sources[] = {
   {&Upstream,       NULL},
@@ -682,7 +494,7 @@ os_trisquel_sources[] = {
 
 
 /**
- * 2023-09-29 更新
+ * @time 2023-09-29 更新
  */
 os_raspberrypi_sources[] = {
   {&Upstream,       NULL},
@@ -696,7 +508,7 @@ os_raspberrypi_sources[] = {
 
 
 /**
- * 2024-06-20 更新
+ * @time 2024-06-20 更新
  */
 os_armbian_sources[] = {
     {&Upstream,       NULL},
@@ -711,12 +523,12 @@ os_armbian_sources[] = {
 
 
 /**
- * 2023-09-27 更新
+ * @time 2023-09-27 更新
  *
- * @note 该源需要 FreeBSD 中文社区积极参与维护
- *
- * @ccmywish: [2023-09-24] 以下三个USTC, NJU, Netease 均维护了 freebsd-pkg freebsd-ports
- * @ccmywish: [2023-09-27] 请务必保持Nju前面有至少一个镜像，原因请查看 freebsd 的换源函数
+ * @note by:ccmywish {
+ *   [2023-09-24] 以下三个USTC, NJU, Netease 均维护了 freebsd-pkg freebsd-ports
+ *   [2023-09-27] 请务必保持Nju前面有至少一个镜像，原因请查看 freebsd 的换源函数
+ * }
  */
 os_freebsd_sources[] = {
   {&Upstream,       NULL},
@@ -727,9 +539,8 @@ os_freebsd_sources[] = {
 
 
 /**
- * 2023-09-05 更新
- *
- * TODO: 1. 源并不完整，且未经测试是否有效
+ * @time 2023-09-05 更新
+ * @note 源并不完整，且未经测试是否有效
  */
 os_netbsd_sources[] = {
   {&Upstream,       NULL},
@@ -744,9 +555,8 @@ os_netbsd_sources[] = {
 
 
 /**
- * 2023-09-02 更新
- *
- * TODO: 1. 源并不完整，且未经测试是否有效
+ * @time 2023-09-02 更新
+ * @note 源并不完整，且未经测试是否有效
  */
 os_openbsd_sources[] = {
   {&Upstream,       NULL},
@@ -761,9 +571,8 @@ os_openbsd_sources[] = {
 
 
 /**
- * 2023-09-06 更新
- *
- * TODO: 1. 源并不完整，且未经测试是否有效
+ * @time 2023-09-06 更新
+ * @note 源并不完整，且未经测试是否有效
  */
 os_openeuler_sources[] = {
   {&Upstream,       NULL},
@@ -778,7 +587,7 @@ os_openeuler_sources[] = {
 
 
 /**
- * 2024-06-12 更新
+ * @time 2024-06-12 更新
  */
 os_anolis_sources[] = {
   {&Upstream,       NULL},
@@ -788,7 +597,7 @@ os_anolis_sources[] = {
 
 
 /**
- * 2023-09-29 更新
+ * @time 2023-09-29 更新
  */
 os_openkylin_sources[] = {
   {&Upstream,  "https://archive.openkylin.top/openkylin/"},
@@ -798,9 +607,8 @@ os_openkylin_sources[] = {
 
 
 /**
- * 2024-04-18 更新
- *
- * TODO: 未经测试是否有效
+ * @time 2024-04-18 更新
+ * @note 未经测试是否有效
  */
 os_ros_sources[] = {
   {&Upstream,       NULL},
@@ -817,9 +625,8 @@ os_ros_sources[] = {
 
 
 /**
- * 2024-06-07 更新
- *
- * @note: 目前仅有一个源
+ * @time 2024-06-07 更新
+ * @note 目前仅有一个源
  */
 static SourceInfo
 wr_winget_sources[] = {
@@ -829,10 +636,11 @@ wr_winget_sources[] = {
 
 
 /**
- * 2023-09-10 更新
- *
- * @note 1. 这些链接将会在setsrc函数中补充完整
- *       2. 不确定 Sustech 能否工作
+ * @time 2023-09-10 更新
+ * @note {
+ *   1. 这些链接将会在setsrc函数中补充完整
+ *   2. 不确定 Sustech 能否工作
+ * }
  */
 wr_brew_sources[] = {
   {&Upstream,       NULL},
@@ -844,7 +652,7 @@ wr_brew_sources[] = {
 
 
 /**
- * 2024-06-08 更新
+ * @time 2024-06-08 更新
  */
 wr_cocoapods_sources[] = {
   {&Upstream,       NULL},
@@ -852,32 +660,10 @@ wr_cocoapods_sources[] = {
   {&Bfsu,          "https://mirrors.bfsu.edu.cn/git/CocoaPods/Specs.git"}
 },
 
-/**
- * 2024-07-24 更新
- *
- * @note USTC 与 SJTUG 于 2024-06-06 停止支持 DockerHub
- * @note NJU 于 2024-06-07 停止支持 DockerHub
- *
- * 参考：https://gist.github.com/y0ngb1n/7e8f16af3242c7815e7ca2f0833d3ea6
- */
-wr_dockerhub_sources[] = {
-  {&Upstream,       NULL},
-  // {&Ustc,       "https://docker.mirrors.ustc.edu.cn/"},
-
-  // https://github.com/DaoCloud/public-image-mirror
-  {&DaoCloud,      "https://docker.m.daocloud.io"},
-  {&Fit2Cloud,      "https://docker.1panel.live"},
-
-  // 暂时加入，未来若国内镜像恢复，将删除
-  // https://huecker.io/en/use.html#unbanned
-  {&Huecker,       "https://huecker.io"}
-},
-
 
 
 /**
- * 2023-09-11 更新
- *
+ * @time 2023-09-11 更新
  * @note 目前只有一个源
  */
 wr_flathub_sources[] = {
@@ -888,10 +674,11 @@ wr_flathub_sources[] = {
 
 
 /**
- * 2023-09-22 更新
- *
- * @note 1. 目前只有一个源
- *       2. 这些链接将会在setsrc函数中补充完整
+ * @time 2023-09-22 更新
+ * @note {
+ *   1. 目前只有一个源
+ *   2. 这些链接将会在setsrc函数中补充完整
+ * }
  */
 wr_nix_sources[] = {
   {&Upstream,       NULL},
@@ -901,8 +688,7 @@ wr_nix_sources[] = {
 
 
 /**
- * 2023-09-11 更新
- *
+ * @time 2023-09-11 更新
  * @note 目前只有一个源
  */
 wr_guix_sources[] = {
@@ -912,25 +698,9 @@ wr_guix_sources[] = {
 
 
 
-/**
- * 2023-09-10 更新
- *
- * @note Emacs用户往往只需要一次性换源，只会极少次调用 chsrc，我们只给用户提供文档
- */
-wr_emacs_sources[] = {
-  {&Upstream,       NULL},
-  {&Sjtug_Zhiyuan,  "https://mirrors.sjtug.sjtu.edu.cn/docs/emacs-elpa"},
-  {&Tuna,           "https://mirrors.tuna.tsinghua.edu.cn/help/elpa/"},
-  {&Bfsu,           "https://mirrors.bfsu.edu.cn/help/elpa/"},
-  {&Ustc,           "https://mirrors.ustc.edu.cn/help/elpa.html"},
-  {&Zju,            "https://mirrors.zju.edu.cn/docs/elpa/"},
-  {&EmacsChina,     "https://elpamirror.emacs-china.org/"}
-},
-
 
 /**
- * 2023-09-10 更新
- *
+ * @time 2023-09-10 更新
  * @note 这些链接将会在setsrc函数中补充完整
  */
 wr_anaconda_sources[] = {
@@ -944,9 +714,7 @@ wr_anaconda_sources[] = {
 
 
 /**
- * 2023-09-10 更新
- *
- * TODO: 1. 暂未添加商业公司源
+ * @time 2023-09-10 更新
  */
 wr_tex_sources[] = {
   {&Upstream,       NULL},
@@ -962,10 +730,8 @@ wr_tex_sources[] = {
 
 #define def_sources_n(t) const size_t t##_sources_n = xy_arylen(t##_sources)
 
-def_sources_n(pl_ruby);     def_sources_n(pl_python);    def_sources_n(pl_nodejs);
-def_sources_n(pl_perl);     def_sources_n(pl_php);       def_sources_n(pl_lua);
-def_sources_n(pl_go);       def_sources_n(pl_rust);
-def_sources_n(pl_java);     def_sources_n(pl_clojure);
+
+def_sources_n(pl_clojure);
 def_sources_n(pl_dotnet);   def_sources_n(pl_dart);      def_sources_n(pl_haskell);
 def_sources_n(pl_ocaml);
 def_sources_n(pl_r);        def_sources_n(pl_julia);
@@ -991,8 +757,8 @@ def_sources_n(os_anolis);
 
 def_sources_n(wr_winget);
 def_sources_n(wr_brew);     def_sources_n(wr_cocoapods);
-def_sources_n(wr_dockerhub);
+
 def_sources_n(wr_flathub);
 def_sources_n(wr_nix);      def_sources_n(wr_guix);
-def_sources_n(wr_tex);      def_sources_n(wr_emacs);
+def_sources_n(wr_tex);
 def_sources_n(wr_anaconda);

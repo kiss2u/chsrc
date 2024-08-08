@@ -136,6 +136,7 @@ set  <target> https://abc # 换源，用户自定义源URL
 reset <target>            # 重置，使用上游默认使用的源
 
 选项:
+-dry                      # Dry Run，模拟换源过程，命令仅打印并不运行
 -ipv6                     # 使用IPv6测速
 -local                    # 仅对某项目而非全局换源 (仅部分软件如bundler,pdm支持)
 ```
@@ -166,8 +167,8 @@ chsrc set -local pdm
 
 ```bash
 chsrc set ruby    或 set gem
-chsrc set python  或 set pip / pdm # 同时换pip和pdm
-chsrc set node    或 set npm / nodejs / yarn / pnpm # 同时换3个
+chsrc set python  或 set pip / poetry / pdm # 同时换pip、poetry 和 pdm 这3个
+chsrc set node    或 set npm / nodejs / yarn / pnpm # 同时换这3个
 chsrc set perl    或 set cpan
 chsrc set php     或 set composer
 chsrc set lua     或 set luarocks
@@ -210,6 +211,7 @@ sudo chsrc set trisquel
 sudo chsrc set lite  或 set linuxlite
 sudo chsrc set raspi 或 set raspberrypi
 sudo chsrc set armbian
+sudo chsrc set openwrt
 
 sudo chsrc set euler  或 set openeuler
 sudo chsrc set anolis 或 set openanolis

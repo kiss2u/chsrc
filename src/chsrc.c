@@ -1,5 +1,6 @@
 /** ------------------------------------------------------------
  * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright © 2023-2024 Aoran Zeng, Heng Guo
  * -------------------------------------------------------------
  * File          : chsrc.c
  * Authors       : Aoran Zeng    <ccmywish@qq.com>
@@ -10,451 +11,26 @@
  *               | BlockLune     <blocklune@gmail.com>
  *               |
  * Created on    : <2023-08-28>
- * Last modified : <2024-07-29>
+ * Last modified : <2024-08-09>
  *
  * chsrc: Change Source —— 全平台通用命令行换源工具
  * ------------------------------------------------------------*/
 
-#define Chsrc_Version       "v0.1.7.1dev1-2024/07/29"
+#define Chsrc_Version       "v0.1.7.2.dev1-2024/08/09"
 #define Chsrc_Maintain_URL  "https://github.com/RubyMetric/chsrc"
 #define Chsrc_Maintain_URL2 "https://gitee.com/RubyMetric/chsrc"
 
 #include "chsrc.h"
 
-void
-pl_ruby_getsrc (char *option)
-{
-  chsrc_run ("gem sources", RunOpt_Default);
-  chsrc_run ("bundle config get mirror.https://rubygems.org", RunOpt_Default);
-}
-
-void
-pl_ruby_remove_gem_source (const char *source)
-{
-  char *cmd = NULL;
-  if (is_url (source))
-    {
-      cmd = xy_str_delete_suffix (source, "\n");
-      cmd = xy_2strjoin ("gem sources -r ", cmd);
-      chsrc_run (cmd, RunOpt_Default);
-    }
-}
-
-/**
- * Ruby换源，参考：https://gitee.com/RubyMetric/rbenv-cn
- */
-void
-pl_ruby_setsrc (char *option)
-{
-  char *chsrc_type = xy_streql (option, ChsrcTypeReset) ? ChsrcTypeReset : ChsrcTypeAuto;
-
-  chsrc_ensure_program ("gem");
-
-  SourceInfo source;
-  chsrc_yield_source (pl_ruby);
-  chsrc_confirm_source (&source);
-
-  char *cmd = NULL;
-
-  xy_run ("gem sources -l", 0, pl_ruby_remove_gem_source);
-
-  cmd = xy_2strjoin ("gem source -a ", source.url);
-  chsrc_run (cmd, RunOpt_Default);
-
-
-  chsrc_ensure_program ("bundle");
-
-  char *where = " --global ";
-  if (Cli_Option_Locally==true)
-    {
-      where = " --local ";
-    }
-
-  cmd = xy_strjoin (4, "bundle config", where, "'mirror.https://rubygems.org' ", source.url);
-  chsrc_run (cmd, RunOpt_No_Last_New_Line);
-
-  chsrc_say_lastly (&source, chsrc_type);
-  // puts ("");
-  // chsrc_warn ("维护者提醒您: Ruby的镜像源目前仅有 腾讯软件源，RubyChina，华为开源镜像站 实现正确");
-  // chsrc_warn ("而其它如Tuna,Bfsu,Ali目前都实现的有问题，请勿使用");
-}
-
-void
-pl_ruby_resetsrc (char *option)
-{
-  pl_ruby_setsrc (ChsrcTypeReset);
-}
-
-
-/**
- * @param[out] prog      返回 Python 的可用名，如果不可用，则返回 NULL
- * @param[out] pdm_exist 判断 pdm 是否存在
- */
-void
-pl_python_check_cmd (char **prog, bool *pdm_exist)
-{
-  *prog = NULL;
-  *pdm_exist = false;
-
-  bool py_exist = false;
-
-  // 由于Python2和Python3的历史，目前（2024-06）许多python命令实际上仍然是python2
-  // https://gitee.com/RubyMetric/chsrc/issues/I9VZL2
-  // 因此我们首先测试 python3
-  py_exist = chsrc_check_program ("python3");
-
-  if (py_exist)
-    {
-      *prog = "python3";
-    }
-  else
-    {
-      // 不要调用 python 自己，而是使用 python --version，避免Windows弹出Microsoft Store
-      py_exist = chsrc_check_program ("python");
-      if (py_exist)
-        {
-          *prog = "python";
-        }
-      else
-        {
-          chsrc_error ("未找到 Python 相关命令，请检查是否存在");
-          exit (Exit_UserCause);
-        }
-    }
-
-  *pdm_exist = chsrc_check_program ("pdm");
-}
-
-void
-pl_python_getsrc (char *option)
-{
-  char *prog = NULL;
-  bool pdm_exist = false;
-  pl_python_check_cmd (&prog, &pdm_exist);
-  char *cmd = xy_2strjoin (prog, " -m pip config get global.index-url");
-  chsrc_run (cmd, RunOpt_Default);
-
-  if (pdm_exist) {
-    cmd = "pdm config --global pypi.url";
-    chsrc_run (cmd, RunOpt_Default);
-  }
-}
-
-/**
- * Python换源，参考：
- * 1. https://mirrors.tuna.tsinghua.edu.cn/help/pypi/
- * 2. https://github.com/RubyMetric/chsrc/issues/19
- *
- * 经测试，Windows上调用换源命令，会写入 C:\Users\RubyMetric\AppData\Roaming\pip\pip.ini
- */
-void
-pl_python_setsrc (char *option)
-{
-  char *chsrc_type = xy_streql (option, ChsrcTypeReset) ? ChsrcTypeReset : ChsrcTypeAuto;
-  char *prog = NULL;
-  bool pdm_exist = false;
-  pl_python_check_cmd (&prog, &pdm_exist);
-
-  SourceInfo source;
-  chsrc_yield_source (pl_python);
-  chsrc_confirm_source (&source);
-
-  // 这里用的是 config --user，会写入用户目录（而不是项目目录）
-  // GitHub#39
-  char *cmd = xy_2strjoin (prog, xy_2strjoin (" -m pip config --user set global.index-url ", source.url));
-  chsrc_run (cmd, RunOpt_Default);
-
-  if (pdm_exist)
-    {
-      char *where = " --global ";
-      if (Cli_Option_Locally==true)
-        {
-          where = " --local ";
-        }
-      cmd = xy_strjoin (4, "pdm config", where, "pypi.url ", source.url);
-      chsrc_run (cmd, RunOpt_Default);
-    }
-
-  chsrc_say_lastly (&source, chsrc_type);
-}
-
-void
-pl_python_resetsrc (char *option)
-{
-  pl_python_setsrc (ChsrcTypeReset);
-}
-
-
-
-void
-pl_nodejs_check_cmd (bool *npm_exist, bool *yarn_exist, bool *pnpm_exist)
-{
-  char *check_cmd = xy_str_to_quietcmd ("npm -v");
-  *npm_exist = query_program_exist (check_cmd, "npm");
-
-  check_cmd = xy_str_to_quietcmd ("yarn -v");
-  *yarn_exist = query_program_exist (check_cmd, "yarn");
-
-  check_cmd = xy_str_to_quietcmd ("pnpm -v");
-  *pnpm_exist = query_program_exist (check_cmd, "pnpm");
-
-  if (!*npm_exist && !*yarn_exist && !*pnpm_exist)
-    {
-      chsrc_error ("未找到 npm 或 yarn 或 pnpm 命令，请检查是否存在其一");
-      exit (Exit_UserCause);
-    }
-}
-
-
-void
-pl_nodejs_getsrc (char *option)
-{
-  bool npm_exist, yarn_exist, pnpm_exist;
-  pl_nodejs_check_cmd (&npm_exist, &yarn_exist, &pnpm_exist);
-
-  if (npm_exist)
-    {
-      chsrc_run ("npm config get registry", RunOpt_Default);
-    }
-  if (yarn_exist)
-    {
-      chsrc_run ("yarn config get registry", RunOpt_Default);
-    }
-  if (pnpm_exist)
-    {
-      chsrc_run ("pnpm config get registry", RunOpt_Default);
-    }
-}
-
-/**
- * NodeJS换源，参考：https://npmmirror.com/
- */
-void
-pl_nodejs_setsrc (char *option)
-{
-  bool npm_exist, yarn_exist, pnpm_exist;
-  pl_nodejs_check_cmd (&npm_exist, &yarn_exist, &pnpm_exist);
-
-  SourceInfo source;
-  chsrc_yield_source (pl_nodejs);
-  chsrc_confirm_source (&source);
-
-  char *cmd = NULL;
-
-  char *where = " ";
-  if (Cli_Option_Locally==true)
-    {
-      where = " --location project ";
-    }
-
-  if (npm_exist)
-    {
-      cmd = xy_strjoin (4, "npm config", where, "set registry ", source.url);
-      chsrc_run (cmd, RunOpt_Default);
-    }
-
-  if (yarn_exist)
-    {
-      // 不再阻止换源命令输出到终端，即不再调用 xy_str_to_quietcmd()
-      cmd = xy_2strjoin ("yarn config set registry ", source.url);
-      chsrc_run (cmd, RunOpt_Default);
-    }
-
-  if (pnpm_exist)
-    {
-      cmd = xy_2strjoin ("pnpm config set registry ", source.url);
-      chsrc_run (cmd, RunOpt_Default);
-    }
-
-  chsrc_say_lastly (&source, ChsrcTypeAuto);
-}
-
-
-
-void
-pl_perl_check_cmd ()
-{
-  chsrc_ensure_program ("perl");
-}
-
-void
-pl_perl_getsrc (char *option)
-{
-  pl_perl_check_cmd ();
-  // @ccmywish: 注意，prettyprint 仅仅是一个内部实现，可能不稳定，如果需要更稳定的，
-  //            可以使用 CPAN::Shell->o('conf', 'urllist');
-  //            另外，上述两种方法无论哪种，都要首先load()
-  char *cmd = "perl -MCPAN -e \"CPAN::HandleConfig->load(); CPAN::HandleConfig->prettyprint('urllist')\" ";
-  chsrc_run (cmd, RunOpt_Default);
-}
-
-/**
- * Perl换源，参考：https://help.mirrors.cernet.edu.cn/CPAN/
- */
-void
-pl_perl_setsrc (char *option)
-{
-  SourceInfo source;
-  chsrc_yield_source (pl_perl);
-  chsrc_confirm_source (&source);
-
-  char *cmd = xy_strjoin (3,
-  "perl -MCPAN -e \"CPAN::HandleConfig->load(); CPAN::HandleConfig->edit('urllist', 'unshift', '", source.url, "'); CPAN::HandleConfig->commit()\"");
-  chsrc_run (cmd, RunOpt_Default);
-
-  chsrc_warn ("请您使用 perl -v 以及 cpan -v，若 Perl >= v5.36 或 CPAN >= 2.29，请额外手动调用下面的命令");
-  puts ("perl -MCPAN -e \"CPAN::HandleConfig->load(); CPAN::HandleConfig->edit('pushy_https', 0);; CPAN::HandleConfig->commit()\"");
-  chsrc_say_lastly (&source, ChsrcTypeSemiAuto);
-}
-
-
-
-void
-pl_php_check_cmd ()
-{
-  chsrc_ensure_program ("composer");
-}
-
-/**
- * 已在Windows上测试通过，待其他平台PHP用户确认
- */
-void
-pl_php_getsrc (char *option)
-{
-  pl_php_check_cmd ();
-  chsrc_run ("composer config -g repositories", RunOpt_Default);
-}
-
-/**
- * PHP 换源，参考：https://developer.aliyun.com/composer
- */
-void
-pl_php_setsrc (char *option)
-{
-  pl_php_check_cmd ();
-
-  SourceInfo source;
-  chsrc_yield_source (pl_php);
-  chsrc_confirm_source (&source);
-
-  char *where = " -g ";
-  if (Cli_Option_Locally==true)
-    {
-      where = " ";
-    }
-
-  char *cmd = xy_strjoin (4, "composer config", where, "repo.packagist composer ", source.url);
-  chsrc_run (cmd, RunOpt_Default);
-
-  chsrc_say_lastly (&source, ChsrcTypeSemiAuto);
-}
-
-
-void
-pl_lua_getsrc (char *option)
-{
-  chsrc_view_file ("~/.luarocks/config.lua");
-  chsrc_view_file ("~/.luarocks/upload_config.lua");
-}
-
-/**
- * Lua 换源，参考：https://luarocks.cn/
- */
-void
-pl_lua_setsrc (char *option)
-{
-  SourceInfo source;
-  chsrc_yield_source (pl_lua);
-  chsrc_confirm_source (&source);
-
-  char *config = xy_strjoin (3, "rocks_servers = {\n"
-                                "  \"", source.url, "\"\n"
-                                "}");
-
-  chsrc_note_remarkably ("请手动修改 ~/.luarocks/config.lua 文件 (用于下载):");
-  puts (config);
-
-  char *upload_config = xy_strjoin (3, "key = \"<Your API Key>\"\n"
-                                      "server = \"", source.url, "\"");
-
-  chsrc_note_remarkably ("请手动修改  ~/.luarocks/upload_config.lua 文件 (用于上传):");
-  puts (upload_config);
-
-  chsrc_say_lastly (&source, ChsrcTypeManual);
-}
-
-
-
-void
-pl_go_check_cmd ()
-{
-  char *check_cmd = xy_str_to_quietcmd ("go version");
-  bool exist = query_program_exist (check_cmd, "go");
-
-  if (!exist)
-    {
-      chsrc_error ("未找到 go 相关命令，请检查是否存在");
-      exit (Exit_UserCause);
-    }
-}
-
-void
-pl_go_getsrc (char *option)
-{
-  pl_go_check_cmd ();
-  chsrc_run ("go env GOPROXY", RunOpt_Default);
-}
-
-/**
- * Go换源，参考：https://goproxy.cn/
- */
-void
-pl_go_setsrc (char *option)
-{
-  pl_go_check_cmd ();
-
-  SourceInfo source;
-  chsrc_yield_source (pl_go);
-  chsrc_confirm_source (&source);
-
-  char *cmd = "go env -w GO111MODULE=on";
-  chsrc_run (cmd, RunOpt_Default);
-
-  cmd = xy_strjoin (3, "go env -w GOPROXY=", source.url, ",direct");
-  chsrc_run (cmd, RunOpt_Default);
-  chsrc_say_lastly (&source, ChsrcTypeAuto);
-}
-
-
-
-void
-pl_rust_getsrc (char *option)
-{
-  chsrc_view_file ("~/.cargo/config.toml");
-}
-
-/**
- * Rust 换源，参考：https://mirrors.tuna.tsinghua.edu.cn/help/crates.io-index/
- */
-void
-pl_rust_setsrc (char *option)
-{
-  SourceInfo source;
-  chsrc_yield_source (pl_rust);
-  chsrc_confirm_source (&source);
-
-  const char* file = xy_strjoin (3,
-    "[source.crates-io]\n"
-    "replace-with = 'mirror'\n\n"
-
-    "[source.mirror]\n"
-    "registry = \"sparse+", source.url, "\"");
-
-  chsrc_warn (xy_strjoin (3, "请您手动写入以下内容到 ", xy_uniform_path ("~/.cargo/config.toml"), " 文件中:"));
-  puts (file);
-  chsrc_say_lastly (&source, ChsrcTypeManual);
-}
-
+#include "recipe/lang/ruby.c"
+#include "recipe/lang/python.c"
+#include "recipe/lang/nodejs.c"
+#include "recipe/lang/perl.c"
+#include "recipe/lang/php.c"
+#include "recipe/lang/lua.c"
+#include "recipe/lang/go.c"
+#include "recipe/lang/java.c"
+#include "recipe/lang/rust.c"
 
 
 void
@@ -474,86 +50,6 @@ pl_dotnet_setsrc (char *option)
 
 
 
-void
-pl_java_check_cmd (bool *maven_exist, bool *gradle_exist)
-{
-  *maven_exist  = chsrc_check_program ("mvn");
-  *gradle_exist = chsrc_check_program ("gradle");
-
-  if (! *maven_exist && ! *gradle_exist)
-    {
-      chsrc_error ("maven 与 gradle 命令均未找到，请检查是否存在其一");
-      exit (Exit_UserCause);
-    }
-}
-
-char *
-pl_java_find_maven_config ()
-{
-  char *buf = xy_run ("mvn -v", 2, NULL);
-  char *maven_home = xy_str_delete_prefix (buf, "Maven home: ");
-  maven_home = xy_str_strip (maven_home);
-
-  char *maven_config = xy_uniform_path (xy_2strjoin (maven_home, "/conf/settings.xml"));
-  return maven_config;
-}
-
-void
-pl_java_getsrc (char *option)
-{
-  bool maven_exist, gradle_exist;
-  pl_java_check_cmd (&maven_exist, &gradle_exist);
-  char *maven_config = pl_java_find_maven_config ();
-  chsrc_note_remarkably (xy_2strjoin ("请查看 ", maven_config));
-}
-
-/**
- * Java 换源，参考：https://developer.aliyun.com/mirror/maven
- */
-void
-pl_java_setsrc (char *option)
-{
-  bool maven_exist, gradle_exist;
-  pl_java_check_cmd (&maven_exist, &gradle_exist);
-
-  SourceInfo source;
-  chsrc_yield_source (pl_java);
-  chsrc_confirm_source (&source);
-
-  if (maven_exist)
-    {
-      const char *file = xy_strjoin (7,
-      "<mirror>\n"
-      "  <id>", source.mirror->code, "</id>\n"
-      "  <mirrorOf>*</mirrorOf>\n"
-      "  <name>", source.mirror->name, "</name>\n"
-      "  <url>", source.url, "</url>\n"
-      "</mirror>");
-
-      char *maven_config = pl_java_find_maven_config ();
-      chsrc_note_remarkably (xy_strjoin (3, "请在您的 maven 配置文件 ", maven_config, " 中添加:"));
-      puts (file);
-    }
-
-  if (gradle_exist)
-    {
-      if (maven_exist) puts ("");
-      const char* file = xy_strjoin (3,
-      "allprojects {\n"
-      "  repositories {\n"
-      "    maven { url '", source.url, "' }\n"
-      "    mavenLocal()\n"
-      "    mavenCentral()\n"
-      "  }\n"
-      "}");
-
-      chsrc_note_remarkably ("请在您的 build.gradle 中添加:");
-      puts (file);
-    }
-  chsrc_say_lastly (&source, ChsrcTypeManual);
-}
-
-
 
 void
 pl_clojure_setsrc (char *option)
@@ -562,7 +58,7 @@ pl_clojure_setsrc (char *option)
   chsrc_yield_source (pl_clojure);
   chsrc_confirm_source (&source);
 
-  chsrc_warn ("抱歉，Clojure换源较复杂，您可手动查阅并换源:");
+  chsrc_note2 ("抱歉，Clojure换源较复杂，您可手动查阅并换源:");
   puts (source.url);
   chsrc_say_lastly (&source, ChsrcTypeManual);
 }
@@ -654,7 +150,7 @@ pl_haskell_setsrc (char *option)
       config = "~/.cabal/config";
     }
 
-  chsrc_note_remarkably (xy_strjoin (3, "请向 ", config, " 中手动添加:"));
+  chsrc_note2 (xy_strjoin (3, "请向 ", config, " 中手动添加:"));
   puts (file); puts ("");
 
   config = xy_uniform_path ("~/.stack/config.yaml");
@@ -674,7 +170,7 @@ pl_haskell_setsrc (char *option)
                        "        key-threshold: 3\n"
                        "        ignore-expiry: no");
 
-  chsrc_note_remarkably (xy_strjoin (3, "请向 ", config, " 中手动添加:"));
+  chsrc_note2 (xy_strjoin (3, "请向 ", config, " 中手动添加:"));
   puts (file);
   chsrc_say_lastly (&source, ChsrcTypeManual);
 }
@@ -712,7 +208,7 @@ pl_ocaml_setsrc(char *option)
 
   chsrc_run (cmd, RunOpt_Default);
 
-  chsrc_note_remarkably ("如果是首次使用 opam ，请使用以下命令进行初始化");
+  chsrc_note2 ("如果是首次使用 opam ，请使用以下命令进行初始化");
   puts (xy_2strjoin ("opam init default ", source.url));
 
   chsrc_say_lastly (&source, ChsrcTypeSemiAuto);
@@ -830,7 +326,7 @@ ensure_apt_sourcelist (int debian_type)
     }
   else
     {
-      chsrc_note_remarkably ("将生成新的源配置文件");
+      chsrc_note2 ("将生成新的源配置文件");
     }
 
   // 反向引用需要escape一下
@@ -926,7 +422,7 @@ os_ubuntu_getsrc (char *option)
       return;
     }
 
-  chsrc_error_remarkably ("缺少源配置文件！但仍可直接通过 chsrc set ubuntu 来添加使用新的源");
+  chsrc_error2 ("缺少源配置文件！但仍可直接通过 chsrc set ubuntu 来添加使用新的源");
   return;
 }
 
@@ -969,7 +465,7 @@ os_ubuntu_setsrc (char *option)
 
   if (chsrc_check_file (ETC_APT_DEB822_Ubuntu_Sources))
     {
-      chsrc_note_remarkably ("将基于新格式换源");
+      chsrc_note2 ("将基于新格式换源");
       os_ubuntu_setsrc_for_deb822 (option);
       return;
     }
@@ -1030,7 +526,7 @@ os_mint_setsrc (char *option)
   chsrc_run (cmd, RunOpt_Default);
   chsrc_run ("apt update", RunOpt_No_Last_New_Line);
   chsrc_say_lastly (&source, ChsrcTypeAuto);
-  chsrc_warn ("完成后请不要再使用 mintsources（自带的图形化软件源设置工具）进行任何操作，因为在操作后，无论是否有按“确定”，mintsources 均会覆写我们刚才换源的内容");
+  chsrc_warn2 ("完成后请不要再使用 mintsources（自带的图形化软件源设置工具）进行任何操作，因为在操作后，无论是否有按“确定”，mintsources 均会覆写我们刚才换源的内容");
 }
 
 
@@ -1050,7 +546,7 @@ os_debian_getsrc (char *option)
       return;
     }
 
-  chsrc_error_remarkably ("缺少源配置文件！但仍可直接通过 chsrc set debian 来添加使用新的源");
+  chsrc_error2 ("缺少源配置文件！但仍可直接通过 chsrc set debian 来添加使用新的源");
   return;
 }
 
@@ -1061,7 +557,7 @@ os_debian_setsrc_for_deb822 (char *option)
   chsrc_yield_source (os_debian);
   chsrc_confirm_source (&source);
 
-  chsrc_note_remarkably ("如果遇到无法拉取 HTTPS 源的情况，我们会使用 HTTP 源并需要您运行:");
+  chsrc_note2 ("如果遇到无法拉取 HTTPS 源的情况，我们会使用 HTTP 源并需要您运行:");
   puts ("apt install apt-transport-https ca-certificates");
 
   chsrc_backup (ETC_APT_DEB822_Debian_Sources);
@@ -1089,7 +585,7 @@ os_debian_setsrc (char *option)
 
   if (chsrc_check_file (ETC_APT_DEB822_Debian_Sources))
     {
-      chsrc_note_remarkably ("将基于新格式换源");
+      chsrc_note2 ("将基于新格式换源");
       os_debian_setsrc_for_deb822 (option);
       return;
     }
@@ -1102,7 +598,7 @@ os_debian_setsrc (char *option)
   chsrc_yield_source (os_debian);
   chsrc_confirm_source (&source);
 
-  chsrc_note_remarkably ("如果遇到无法拉取 HTTPS 源的情况，我们会使用 HTTP 源并需要您运行:");
+  chsrc_note2 ("如果遇到无法拉取 HTTPS 源的情况，我们会使用 HTTP 源并需要您运行:");
   puts ("apt install apt-transport-https ca-certificates");
 
   // 不存在的时候，用的是我们生成的无效文件，不要备份
@@ -1156,7 +652,7 @@ os_armbian_getsrc (char *option)
       return;
     }
 
-  chsrc_error_remarkably ("缺少源配置文件！路径：" OS_Armbian_SOURCELIST);
+  chsrc_error2 ("缺少源配置文件！路径：" OS_Armbian_SOURCELIST);
 }
 
 /**
@@ -1227,7 +723,7 @@ os_fedora_setsrc (char *option)
   chsrc_yield_source (os_fedora);
   chsrc_confirm_source (&source);
 
-  chsrc_warn_remarkably ("Fedora 29 及以下版本暂不支持");
+  chsrc_note2 ("Fedora 29 及以下版本暂不支持");
 
   chsrc_backup ("/etc/yum.repos.d/fedora.repo");
   chsrc_backup ("/etc/yum.repos.d/fedora-updates.repo");
@@ -1244,10 +740,10 @@ os_fedora_setsrc (char *option)
 
   chsrc_run (cmd, RunOpt_Default);
 
-  chsrc_infolog_remarkably ("已替换文件 /etc/yum.repos.d/fedora.repo");
-  chsrc_infolog_remarkably ("已新增文件 /etc/yum.repos.d/fedora-modular.repo");
-  chsrc_infolog_remarkably ("已替换文件 /etc/yum.repos.d/fedora-updates.repo");
-  chsrc_infolog_remarkably ("已新增文件 /etc/yum.repos.d/fedora-updates-modular.repo");
+  chsrc_log2 ("已替换文件 /etc/yum.repos.d/fedora.repo");
+  chsrc_log2 ("已新增文件 /etc/yum.repos.d/fedora-modular.repo");
+  chsrc_log2 ("已替换文件 /etc/yum.repos.d/fedora-updates.repo");
+  chsrc_log2 ("已新增文件 /etc/yum.repos.d/fedora-updates-modular.repo");
 
   chsrc_run ("dnf makecache", RunOpt_No_Last_New_Line);
   chsrc_say_lastly (&source, ChsrcTypeAuto);
@@ -1300,9 +796,9 @@ os_opensuse_setsrc (char *option)
   chsrc_run (cmd3, RunOpt_Default);
   chsrc_run (cmd4, RunOpt_Default);
 
-  chsrc_note_remarkably ("leap 15.3用户还需要添加sle和backports源");
-  chsrc_note_remarkably ("另外请确保系统在更新后仅启用了六个软件源，可以使用 zypper lr 检查软件源状态");
-  chsrc_note_remarkably ("并使用 zypper mr -d 禁用多余的软件源");
+  chsrc_note2 ("leap 15.3用户还需要添加sle和backports源");
+  chsrc_note2 ("另外请确保系统在更新后仅启用了六个软件源，可以使用 zypper lr 检查软件源状态");
+  chsrc_note2 ("并使用 zypper mr -d 禁用多余的软件源");
 
   chsrc_run (cmd5, RunOpt_Default);
   chsrc_run (cmd6, RunOpt_Default);
@@ -1359,7 +855,7 @@ os_msys2_setsrc (char *option)
   char *prev = xy_strjoin (3, "请针对你的架构下载安装此目录下的文件:",
                               source.url,
                              "distrib/<架构>/");
-  chsrc_note_remarkably (prev);
+  chsrc_note2 (prev);
 
   char *cmd = xy_strjoin (3, "sed -i \"s#https\?://mirror.msys2.org/#",
                               source.url,
@@ -1526,7 +1022,7 @@ os_alma_setsrc (char *option)
 
   chsrc_run (cmd, RunOpt_Default);
   chsrc_run ("dnf makecache", RunOpt_No_Last_New_Line);
-  chsrc_say_lastly (&source, ChsrcTypeUntested);
+  chsrc_say_lastly (&source, ChsrcTypeAuto);
 }
 
 
@@ -1592,7 +1088,7 @@ os_void_setsrc (char *option)
             "sed -i 's|https://alpha.de.repo.voidlinux.org|", source.url, "|g' /etc/xbps.d/*-repository-*.conf"
             );
 
-  chsrc_note_remarkably ("若报错可尝试使用以下命令:");
+  chsrc_note2 ("若报错可尝试使用以下命令:");
   puts (cmd);
   chsrc_say_lastly (&source, ChsrcTypeUntested);
 }
@@ -1691,6 +1187,10 @@ os_linuxlite_setsrc (char *option)
 
 
 
+#include "./recipe/os/openwrt.c"
+
+
+
 /**
  * HELP: 未经测试
  */
@@ -1781,7 +1281,7 @@ os_freebsd_setsrc (char *option)
   SourceInfo source = os_freebsd_sources[index];
   chsrc_confirm_source (&source);
 
-  chsrc_infolog_remarkably ("1. 添加 freebsd-pkg 源 (二进制安装包)");
+  chsrc_log2 ("1. 添加 freebsd-pkg 源 (二进制安装包)");
   chsrc_ensure_dir ("/usr/local/etc/pkg/repos");
 
   char *conf = xy_strjoin (3, "/usr/local/etc/pkg/repos/", source.mirror->code, ".conf");
@@ -1794,13 +1294,13 @@ os_freebsd_setsrc (char *option)
                     );
 
   chsrc_overwrite_file (pkg_content, conf);
-  chsrc_warn (
+  chsrc_note2 (
     xy_strjoin (3, "若要使用季度分支，请在", conf ,"中将latest改为quarterly"));
 
-  chsrc_warn ("若要使用HTTPS源，请先安装securtiy/ca_root_ns，并将'http'改成'https'，最后使用'pkg update -f'刷新缓存即可\n");
+  chsrc_note2 ("若要使用HTTPS源，请先安装securtiy/ca_root_ns，并将'http'改成'https'，最后使用'pkg update -f'刷新缓存即可\n");
   puts ("");
 
-  chsrc_infolog_remarkably ("2. 修改 freebsd-ports 源");
+  chsrc_log2 ("2. 修改 freebsd-ports 源");
   // @ccmywish: [2023-09-27] 据 @ykla , NJU的freebsd-ports源没有设置 Git，
   //                         但是我认为由于使用Git还是要比非Git方便许多，我们尽可能坚持使用Git
   //                         而 gitup 又要额外修改它自己的配置，比较麻烦
@@ -1814,7 +1314,7 @@ os_freebsd_setsrc (char *option)
       char *git_cmd = xy_strjoin (3, "git clone --depth 1 https://", source.url, "/freebsd-ports/ports.git /usr/ports");
       chsrc_run (git_cmd, RunOpt_Default);
       source = os_freebsd_sources[index]; // 恢复至选中的源
-      chsrc_note_remarkably ("下次更新请使用 git -C /usr/ports pull 而非使用 gitup");
+      chsrc_note2 ("下次更新请使用 git -C /usr/ports pull 而非使用 gitup");
     }
   else
     {
@@ -1824,11 +1324,11 @@ os_freebsd_setsrc (char *option)
       chsrc_run (fetch, RunOpt_Default);
       chsrc_run (unzip, RunOpt_Default);
       chsrc_run (delete, RunOpt_Default);
-      chsrc_infolog_remarkably ("下次更新请重新下载内容至 /usr/ports");
+      chsrc_log2 ("下次更新请重新下载内容至 /usr/ports");
     }
 
 
-  chsrc_infolog_remarkably ("3. 指定 port 源");
+  chsrc_log2 ("3. 指定 port 源");
   // https://help.mirrors.cernet.edu.cn/FreeBSD-ports/
   chsrc_backup ("/etc/make.conf");
 
@@ -1845,15 +1345,15 @@ os_freebsd_setsrc (char *option)
 
     chsrc_overwrite_file (portsnap, "/etc/portsnap.conf");
 
-    chsrc_infolog_remarkably ("portsnap sources changed");
-    chsrc_infolog_remarkably ("获取portsnap更新使用此命令: 'portsnap fetch extract'");
+    chsrc_log2 ("portsnap sources changed");
+    chsrc_log2 ("获取portsnap更新使用此命令: 'portsnap fetch extract'");
   */
 
 
   // HELP: 暂时没有源提供
-  chsrc_note_remarkably ("4. 抱歉，目前境内无 freebsd-update 源，若存在请报告issue，谢谢");
+  chsrc_note2 ("4. 抱歉，目前境内无 freebsd-update 源，若存在请报告issue，谢谢");
   /*
-    chsrc_infolog_remarkably ("3. 修改 freebsd-update 源");
+    chsrc_log2 ("3. 修改 freebsd-update 源");
 
     char *update_cp = "cp /etc/freebsd-update.conf /etc/freebsd-update.conf.bak";
     chsrc_run (update_cp, RunOpt_Default);
@@ -2027,21 +1527,7 @@ wr_tex_setsrc (char *option)
 }
 
 
-
-
-void
-wr_emacs_setsrc (char *option)
-{
-  SourceInfo source;
-  chsrc_yield_source (wr_emacs);
-  chsrc_confirm_source (&source);
-
-  chsrc_warn ("Emacs换源涉及Elisp，需要手动查阅并换源:");
-  puts (source.url);
-
-  chsrc_say_lastly (&source, ChsrcTypeManual);
-}
-
+#include "recipe/ware/emacs.c"
 
 
 void
@@ -2123,7 +1609,7 @@ wr_brew_setsrc (char *option)
     }
 
   chsrc_say_lastly (&source, ChsrcTypeAuto);
-  chsrc_note_remarkably ("请您重启终端使Homebrew环境变量生效");
+  chsrc_note2 ("请您重启终端使Homebrew环境变量生效");
 }
 
 
@@ -2138,7 +1624,7 @@ wr_cocoapods_setsrc (char *option)
   chsrc_yield_source (wr_cocoapods);
   chsrc_confirm_source (&source);
 
-  chsrc_note_remarkably ("请手动执行以下命令:");
+  chsrc_note2 ("请手动执行以下命令:");
 
   say ("cd ~/.cocoapods/repos");
   say ("pod repo remove master");
@@ -2146,7 +1632,7 @@ wr_cocoapods_setsrc (char *option)
   say (git_cmd);
   say ("");
 
-  chsrc_note_remarkably ("最后进入项目工程目录，在Podfile中第一行加入:");
+  chsrc_note2 ("最后进入项目工程目录，在Podfile中第一行加入:");
   char *source_str = xy_strjoin (3, "source '", source.url, "'");
   say (source_str);
 
@@ -2169,7 +1655,7 @@ wr_guix_setsrc (char *option)
                                "       (inherit (car %default-channels))\n"
                                "       (url \"", source.url, "\")))");
 
-  chsrc_warn ("为防止扰乱配置文件，请您手动写入以下内容到 ~/.config/guix/channels.scm 文件中");
+  chsrc_note2 ("为防止扰乱配置文件，请您手动写入以下内容到 ~/.config/guix/channels.scm 文件中");
   puts (file);
   chsrc_say_lastly (&source, ChsrcTypeManual);
 }
@@ -2204,71 +1690,19 @@ wr_nix_setsrc (char *option)
 
   chsrc_run ("nix-channel --update", RunOpt_Default);
 
-  chsrc_note_remarkably ("若您使用的是NixOS，请确认您的系统版本<version>（如22.11），并手动运行:");
+  chsrc_note2 ("若您使用的是NixOS，请确认您的系统版本<version>（如22.11），并手动运行:");
   cmd = xy_strjoin (3, "nix-channel --add ", source.url, "nixpkgs-<version> nixpkgs");
   puts (cmd);
 
   cmd = xy_strjoin (3, "nix.settings.substituters = [ \"", source.url, "store\" ];");
-  chsrc_note_remarkably ("若您使用的是NixOS，请额外添加下述内容至 configuration.nix 中");
+  chsrc_note2 ("若您使用的是NixOS，请额外添加下述内容至 configuration.nix 中");
   puts (cmd);
 
   chsrc_say_lastly (&source, ChsrcTypeSemiAuto);
 }
 
 
-
-void
-wr_dockerhub_getsrc (char *option)
-{
-  if (xy_on_linux || xy_on_bsd)
-    {
-      chsrc_view_file ("/etc/docker/daemon.json");
-    }
-  else
-    {
-      chsrc_note_remarkably ("请打开Docker Desktop设置");
-      chsrc_note_remarkably ("选择“Docker Engine”选项卡，在该选项卡中找到“registry-mirrors”一栏查看");
-    }
-}
-
-/**
- * 参考：
- *  1. https://mirrors.ustc.edu.cn/help/dockerhub.html
- *  2. https://www.cnblogs.com/yuzhihui/p/17461781.html
- */
-void
-wr_dockerhub_setsrc (char *option)
-{
-  SourceInfo source;
-  chsrc_yield_source (wr_dockerhub);
-  chsrc_confirm_source (&source);
-
-  if (xy_on_linux || xy_on_bsd)
-    {
-      char *to_add = xy_strjoin (3, "{\n"
-                                "  \"registry-mirrors\": [\"", source.url, "\"]\n"
-                                "}");
-      chsrc_note_remarkably ("请向 /etc/docker/daemon.json 中添加下述内容:");
-      puts (to_add);
-      if (xy_on_linux)
-        {
-          chsrc_note_remarkably ("然后请运行:");
-          puts ("sudo systemctl restart docker");
-        }
-      else
-        {
-          chsrc_note_remarkably ("然后请手动重启 docker 服务");
-        }
-    }
-  else
-    {
-      chsrc_note_remarkably ("请打开Docker Desktop设置");
-      chsrc_note_remarkably ("选择“Docker Engine”选项卡，在该选项卡中找到“registry-mirrors”一栏，添加镜像地址:");
-      puts (source.url);
-    }
-  chsrc_say_lastly (&source, ChsrcTypeManual);
-}
-
+#include "recipe/ware/docker.c"
 
 
 /**
@@ -2281,7 +1715,7 @@ wr_flathub_setsrc (char *option)
   chsrc_yield_source (wr_flathub);
   chsrc_confirm_source (&source);
 
-  chsrc_warn_remarkably ("若出现问题，可先调用以下命令:");
+  chsrc_note2 ("若出现问题，可先调用以下命令:");
   char *note = xy_strjoin (3,
     "wget ", source.url, "/flathub.gpg\n"
     "flatpak remote-modify --gpg-import=flathub.gpg flathub"
@@ -2339,21 +1773,17 @@ wr_anaconda_setsrc (char *option)
       chsrc_run ("conda config --set show_channel_urls yes", RunOpt_Default);
     }
 
-  chsrc_note_remarkably (xy_strjoin (3, "请向 ", config, " 中手动添加:"));
+  chsrc_note2 (xy_strjoin (3, "请向 ", config, " 中手动添加:"));
   puts (file);
 
-  chsrc_note_remarkably ("然后运行 conda clean -i 清除索引缓存，保证用的是镜像站提供的索引");
+  chsrc_note2 ("然后运行 conda clean -i 清除索引缓存，保证用的是镜像站提供的索引");
   chsrc_say_lastly (&source, ChsrcTypeSemiAuto);
 }
 
 
 
 /************************************** Begin Target Matrix ****************************************/
-def_target_full(pl_ruby);
-def_target_full(pl_python);
-def_target(pl_nodejs);  def_target(pl_perl); def_target(pl_php);
-def_target(pl_lua);
-def_target(pl_rust);  def_target(pl_go);  def_target(pl_java); def_target(pl_dart); def_target(pl_ocaml);
+def_target(pl_dart); def_target(pl_ocaml);
 def_target(pl_r);     def_target(pl_julia);
 def_target_noget (pl_clojure);
 def_target_noget (pl_dotnet);
@@ -2363,7 +1793,7 @@ def_target_noget (pl_haskell);
 #define t(a) (const char*)(a)
 static const char
 *pl_ruby  [] = {"gem",   "ruby",    "rubygem", "rb", "rubygems", "bundler",  NULL, t(&pl_ruby_target)},
-*pl_python[] = {"pip",   "python",  "pypi",    "py", "pdm",                  NULL, t(&pl_python_target)},
+*pl_python[] = {"pip",   "python",  "pypi",    "py", "poetry",   "pdm",      NULL, t(&pl_python_target)},
 *pl_nodejs[] = {"npm",   "node",    "nodejs",  "js", "yarn", "pnpm",         NULL, t(&pl_nodejs_target)},
 *pl_perl  [] = {"perl",  "cpan",                         NULL,  t(&pl_perl_target)},
 *pl_php   [] = {"php",   "composer",                     NULL,  t(&pl_php_target)},
@@ -2426,23 +1856,28 @@ static const char
 *os_solus      [] = {"solus",                NULL,  t(&os_solus_target)},
 *os_trisquel   [] = {"trisquel",             NULL,  t(&os_trisquel_target)},
 *os_linuxlite  [] = {"lite",   "linuxlite",  NULL,  t(&os_linuxlite_target)},
+*os_ros        [] = {"ros",    "ros2",       NULL,  t(&os_ros_target)},
+
 *os_raspberrypi[] = {"raspi",  "raspberrypi",NULL,  t(&os_raspberrypi_target)},
 *os_armbian    [] = {"armbian",              NULL,  t(&os_armbian_target)},
+*os_openwrt    [] = {"openwrt", "opkg", "LEDE", NULL, t(&os_openwrt_target)},
+
+*os_openkylin  [] = {"kylin",  "openkylin",  NULL,  t(&os_openkylin_target)},
+*os_openeuler  [] = {"euler",  "openeuler",  NULL,  t(&os_openeuler_target)},
+*os_deepin     [] = {"deepin",               NULL,  t(&os_deepin_target)},
+*os_anolis     [] = {"anolis", "openanolis", NULL,  t(&os_anolis_target)},
+
 *os_freebsd    [] = {"freebsd",              NULL,  t(&os_freebsd_target)},
 *os_netbsd     [] = {"netbsd",               NULL,  t(&os_netbsd_target)},
 *os_openbsd    [] = {"openbsd",              NULL,  t(&os_openbsd_target)},
-*os_deepin     [] = {"deepin",               NULL,  t(&os_deepin_target)},
-*os_openeuler  [] = {"euler",  "openeuler",  NULL,  t(&os_openeuler_target)},
-*os_anolis     [] = {"anolis", "openanolis", NULL,  t(&os_anolis_target)},
-*os_openkylin  [] = {"kylin",  "openkylin",  NULL,  t(&os_openkylin_target)},
-*os_ros        [] = {"ros",    "ros2",       NULL,  t(&os_ros_target)},
+
 **os_systems[] =
 {
   os_ubuntu,  os_mint,    os_debian,  os_fedora,  os_opensuse, os_kali,
   os_arch,    os_archlinuxcn, os_manjaro, os_gentoo,
   os_rocky,   os_alma,
   os_alpine,   os_void,      os_solus,          os_ros,
-  os_trisquel, os_linuxlite, os_raspberrypi,    os_armbian,
+  os_trisquel, os_linuxlite, os_raspberrypi,    os_armbian,   os_openwrt,
   os_deepin,   os_openeuler, os_anolis,         os_openkylin,
   os_msys2,
   os_freebsd,  os_netbsd,    os_openbsd,
@@ -2452,11 +1887,9 @@ static const char
 def_target_full(wr_winget);
 def_target(wr_brew);
 def_target_noget (wr_cocoapods);
-def_target(wr_dockerhub);
 def_target_noget (wr_flathub);
 def_target_noget (wr_nix);
 def_target_noget (wr_guix);
-def_target_noget (wr_emacs);
 def_target_noget (wr_anaconda);
 def_target(wr_tex);
 
@@ -2476,6 +1909,18 @@ static const char
   wr_winget, wr_brew, wr_cocoapods, wr_dockerhub, wr_flathub, wr_nix, wr_guix, wr_emacs, wr_tex, wr_anaconda
 };
 #undef t
+
+
+
+static MirrorSite*
+available_mirrors[] = {
+  &MirrorZ, &Tuna, &Sjtug_Zhiyuan, &Zju, &Lzuoss, &Jlu, &Bfsu, &Pku, &Bjtu, &Sustech, &Ustc, &Hust, &Nju, // &Cqu,
+  &Ali,  &Tencent, &Huawei, &Volcengine,  &Netease, &Sohu, &Api7, &Fit2Cloud,
+  &RubyChina, &EmacsChina, &NpmMirror, &GoProxyCN, &GoProxyIO,
+  // 暂不支持 &NugetOrg
+  // 不要列出 &Upstream 和 &UserDdefine
+};
+
 /************************************** End Target Matrix ****************************************/
 
 
@@ -2499,6 +1944,7 @@ Chsrc_Usage[] = {
   "reset <target>            重置，使用上游默认使用的源\n",
 
   "选项:",
+  "-dry                      Dry Run，模拟换源过程，命令仅打印并不运行",
   "-ipv6                     使用IPv6测速",
   "-local                    仅对某项目而非全局换源 (通过issue命令查看支持情况)"
 };
@@ -2733,7 +2179,7 @@ get_target (const char *input, TargetOp code, char *option)
     }
   else if (TargetOp_List_Source==code)
     {
-      chsrc_info (xy_strjoin (3, "对 ", input ," 支持以下镜像站"));
+      chsrc_info (xy_strjoin (3, "对 ", input, " 支持以下镜像站"));
       chsrc_info (xy_strjoin (3, "下方 code 列，可用于指定使用某源，请使用 chsrc set ", input, " <code>\n"));
       printf ("%-14s%-35s%-45s ", "code", "服务商简写", "服务源URL"); puts ("服务商名称");
       puts   ("--------------------------------------------------------------------------------------------------------");
@@ -2778,15 +2224,20 @@ main (int argc, char const *argv[])
         {
           if (xy_streql (argv[i], "-ipv6"))
             {
-              Cli_Option_IPv6 = true;
+              CliOpt_IPv6 = true;
             }
           else if (xy_streql (argv[i], "-local"))
             {
-              Cli_Option_Locally = true;
+              CliOpt_Locally = true;
             }
           else if (xy_streql (argv[i], "-en") || xy_streql (argv[i], "-english"))
             {
-              Cli_Option_InEnglish = true;
+              CliOpt_InEnglish = true;
+            }
+          else if (xy_streql (argv[i], "-dry"))
+            {
+              CliOpt_DryRun = true;
+              chsrc_log (to_boldyellow ("**开启Dry Run模式，模拟换源过程(跳过测速)，命令仅打印并不运行**\n"));
             }
           else
             {
@@ -2836,28 +2287,28 @@ main (int argc, char const *argv[])
       else
         {
           target = argv[cli_arg_Target_pos];
-          if (xy_streql(target,"mirrors") || xy_streql(target,"mirror"))
+          if (xy_streql (target, "mirrors") || xy_streql (target, "mirror"))
             {
-              print_available_mirrors(); return 0;
+              print_available_mirrors (); return 0;
             }
-          else if (xy_streql(target,"targets") || xy_streql(target,"target"))
+          else if (xy_streql (target, "targets") || xy_streql (target, "target"))
             {
-              print_supported_targets(); return 0;
+              print_supported_targets (); return 0;
             }
-          else if (xy_streql(target,"os"))
+          else if (xy_streql (target, "os"))
             {
-              print_supported_os(); return 0;
+              print_supported_os (); return 0;
             }
-          else if (xy_streql(target,"lang") || xy_streql(target,"pl") || xy_streql(target,"language"))
+          else if (xy_streql (target, "lang") || xy_streql (target, "pl") || xy_streql (target, "language"))
             {
               print_supported_pl(); return 0;
             }
-          else if (xy_streql(target,"ware") || xy_streql(target,"software"))
+          else if (xy_streql (target, "ware") || xy_streql (target, "software"))
             {
-              print_supported_wr(); return 0;
+              print_supported_wr (); return 0;
             }
 
-          matched = get_target(target, TargetOp_List_Source, NULL);
+          matched = get_target (target, TargetOp_List_Source, NULL);
           if (!matched) goto not_matched;
         }
       return 0;
@@ -2908,9 +2359,10 @@ main (int argc, char const *argv[])
 
       target = argv[cli_arg_Target_pos];
       char *mirrorCode_or_url = NULL;
-      if (argc >= cli_arg_Mirror_pos) {
-        mirrorCode_or_url = xy_strdup (argv[cli_arg_Mirror_pos]);
-      }
+      if (argc >= cli_arg_Mirror_pos)
+        {
+          mirrorCode_or_url = xy_strdup (argv[cli_arg_Mirror_pos]);
+        }
 
       matched = get_target (target, TargetOp_Set_Source, mirrorCode_or_url);
       if (!matched) goto not_matched;

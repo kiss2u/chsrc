@@ -1,5 +1,6 @@
 /** ------------------------------------------------------------
  * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright © 2023-2024 Aoran Zeng, Heng Guo
  * -------------------------------------------------------------
  * File          : chsrc.h
  * Authors       : Aoran Zeng <ccmywish@qq.com>
@@ -7,7 +8,7 @@
  * Contributors  : Peng Gao   <gn3po4g@outlook.com>
  *               |
  * Created on    : <2023-08-29>
- * Last modified : <2024-07-29>
+ * Last modified : <2024-08-09>
  *
  * chsrc 头文件
  * ------------------------------------------------------------*/
@@ -29,33 +30,68 @@
 #define chsrc_warn(str)  xy_warn(App_Name,str)
 #define chsrc_error(str) xy_error(App_Name,str)
 
-#define chsrc_succ_remarkably(str)    xy_succ_remarkably(App_Name,"成功",str);
-#define chsrc_infolog_remarkably(str) xy_info_remarkably(App_Name,"LOG",str);
-#define chsrc_info_remarkably(str)    xy_info_remarkably(App_Name,"提示",str);
-#define chsrc_note_remarkably(str)    xy_warn_remarkably(App_Name,"提示",str);
-#define chsrc_warn_remarkably(str)    xy_warn_remarkably(App_Name,"警告",str);
-#define chsrc_error_remarkably(str)   xy_error_remarkably(App_Name,"错误",str);
+// 2系列都是带有括号的
+#define chsrc_succ2(str)  xy_succ_brkt(App_Name,"成功",str)
+#define chsrc_log2(str)   xy_info_brkt(App_Name,"LOG",str)
+#define chsrc_warn2(str)  xy_warn_brkt(App_Name,"警告",str)
+#define chsrc_error2(str) xy_error_brkt(App_Name,"错误",str)
+
+#define to_red(str)        xy_str_to_red(str)
+#define to_blue(str)       xy_str_to_blue(str)
+#define to_green(str)      xy_str_to_green(str)
+#define to_yellow(str)     xy_str_to_yellow(str)
+#define to_purple(str)     xy_str_to_purple(str)
+#define to_bold(str)       xy_str_to_bold(str)
+#define to_boldred(str)    xy_str_to_bold(xy_str_to_red(str))
+#define to_boldblue(str)   xy_str_to_bold(xy_str_to_blue(str))
+#define to_boldgreen(str)  xy_str_to_bold(xy_str_to_green(str))
+#define to_boldyellow(str) xy_str_to_bold(xy_str_to_yellow(str))
+#define to_boldpurple(str) xy_str_to_bold(xy_str_to_purple(str))
 
 void
-chsrc_check_remarkably (const char *check_what, const char *check_type, bool exist)
+chsrc_note2 (const char* str)
+{
+  xy_log_brkt (to_yellow (App_Name), to_boldyellow ("提示"), to_yellow (str));
+}
+
+
+void
+chsrc_log_check_result (const char *check_what, const char *check_type, bool exist)
 {
   if (!exist)
     {
-      xy_log_remarkably (App_Name, xy_str_to_bold (xy_str_to_red ("检查")),
-                         xy_strjoin (5, xy_str_to_red ("x "), check_type, " ", xy_str_to_red (check_what), " 不存在"));
+      xy_log_brkt (App_Name, to_boldred ("检查"), xy_strjoin (5,
+                   to_red ("x "), check_type, " ", to_red (check_what), " 不存在"));
     }
   else
     {
-      xy_log_remarkably (App_Name, xy_str_to_bold (xy_str_to_green ("检查")),
-                        xy_strjoin (5, xy_str_to_green ("√ "), check_type, " ", xy_str_to_green (check_what), " 存在"));
+      xy_log_brkt (App_Name, to_boldgreen ("检查"), xy_strjoin (5,
+                   to_green ("√ "), check_type, " ", to_green (check_what), " 存在"));
     }
 }
 
 
-bool Cli_Option_IPv6 = false;
-bool Cli_Option_Locally = false;
-bool Cli_Option_InEnglish = false;
+void
+chsrc_log_cmd_result (bool result, int ret_code)
+{
+  if (result)
+    {
+      xy_log_brkt (to_green (App_Name), to_boldgreen ("运行"),  to_green ("√ 命令执行成功"));
+    }
+  else
+    {
+      char buf[8] = {0};
+      sprintf (buf, "%d", ret_code);
+      char *log = xy_2strjoin (to_red ("x 命令执行失败，返回码 "), to_boldred (buf));
+      xy_log_brkt (to_red (App_Name), to_boldred ("运行"), log);
+    }
+}
 
+
+bool CliOpt_IPv6 = false;
+bool CliOpt_Locally = false;
+bool CliOpt_InEnglish = false;
+bool CliOpt_DryRun = false;
 
 bool
 is_url (const char *str)
@@ -85,12 +121,12 @@ query_program_exist (char *check_cmd, char *prog_name)
   if (0 != ret)
     {
       // xy_warn (xy_strjoin(4, "× 命令 ", progname, " 不存在，", buf));
-      chsrc_check_remarkably (prog_name, "命令", false);
+      chsrc_log_check_result (prog_name, "命令", false);
       return false;
     }
   else
     {
-      chsrc_check_remarkably (prog_name, "命令", true);
+      chsrc_log_check_result (prog_name, "命令", true);
       return true;
     }
 }
@@ -132,12 +168,12 @@ chsrc_check_file (char *path)
 {
   if (xy_file_exist (path))
     {
-      chsrc_check_remarkably (path, "文件", true);
+      chsrc_log_check_result (path, "文件", true);
       return true;
     }
   else
     {
-      chsrc_check_remarkably (path, "文件", false);
+      chsrc_log_check_result (path, "文件", false);
       return false;
     }
 }
@@ -223,11 +259,11 @@ to_human_readable_speed (double speed)
   sprintf (buf, "%.2f %s", speed, scale[i]);
 
   char *new = NULL;
-  if (i <= 1 ) new = xy_str_to_red (buf);
+  if (i <= 1 ) new = to_red (buf);
   else
     {
-      if (i == 2 && speed < 2.00) new = xy_str_to_yellow (buf);
-      else new = xy_str_to_green (buf);
+      if (i == 2 && speed < 2.00) new = to_yellow (buf);
+      else new = to_green (buf);
     }
   return new;
 }
@@ -254,15 +290,16 @@ test_speed_url (const char *url)
 
   char *ipv6 = ""; // 默认不启用
 
-  if (Cli_Option_IPv6==true) {
-    ipv6 = "--ipv6";
-  }
+  if (CliOpt_IPv6==true)
+    {
+      ipv6 = "--ipv6";
+    }
 
   // 我们用 —L，因为Ruby China源会跳转到其他地方
   // npmmirror 也会跳转
   char *curl_cmd = xy_strjoin (7, "curl -qsL ", ipv6,
                                   " -o " xy_os_devnull,
-                                  " -w \"%{http_code} %{speed_download}\" -m", time_sec ,
+                                  " -w \"%{http_code} %{speed_download}\" -m", time_sec,
                                   " -A chsrc/" Chsrc_Version "  ", url);
 
   // chsrc_info (xy_2strjoin ("测速命令 ", curl_cmd));
@@ -282,7 +319,7 @@ test_speed_url (const char *url)
 
   if (200!=http_code)
     {
-      char* httpcodestr = xy_str_to_yellow (xy_2strjoin ("HTTP码 ", buf));
+      char* httpcodestr = to_yellow (xy_2strjoin ("HTTP码 ", buf));
       puts (xy_strjoin (3, speedstr, " | ",  httpcodestr));
     }
   else
@@ -323,8 +360,13 @@ auto_select_ (SourceInfo *sources, size_t size, const char *target)
       exit (Exit_MatinerIssue);
     }
 
-  bool onlyone = false;
-  if (2==size) onlyone = true;
+  if (CliOpt_DryRun)
+    {
+      return 1; // Dry Run 时，跳过测速
+    }
+
+  bool only_one = false;
+  if (2==size) only_one = true;
 
   char *check_curl = xy_str_to_quietcmd ("curl --version");
   bool  exist_curl = query_program_exist (check_curl, "curl");
@@ -336,38 +378,39 @@ auto_select_ (SourceInfo *sources, size_t size, const char *target)
 
   double speeds[size];
   double speed = 0.0;
-  for (int i=0;i<size;i++)
-  {
-    SourceInfo src = sources[i];
-    const char* url = src.mirror->__bigfile_url;
-    if (NULL==url)
-      {
-        if (xy_streql ("upstream", src.mirror->code))
-          {
-            continue; // 上游默认源不测速
-          }
-        else
-          {
-            chsrc_warn (xy_strjoin (3, "开发者未提供 ",  src.mirror->code, " 镜像站测速链接，跳过该站点"));
-            speed = 0;
-          }
-      }
-    else
-      {
-        printf ("%s", xy_strjoin (3, "测速 ", src.mirror->site , " ... "));
-        fflush (stdout);
-        speed = test_speed_url (url);
-      }
-    speeds[i] = speed;
-  }
-  int fastidx = get_max_ele_idx_in_dbl_ary (speeds, size);
+  for (int i=0; i<size; i++)
+    {
+      SourceInfo src = sources[i];
+      const char* url = src.mirror->__bigfile_url;
+      if (NULL==url)
+        {
+          if (xy_streql ("upstream", src.mirror->code))
+            {
+              continue; // 上游默认源不测速
+            }
+          else
+            {
+              chsrc_warn (xy_strjoin (3, "开发者未提供 ",  src.mirror->code, " 镜像站测速链接，跳过该站点"));
+              speed = 0;
+            }
+        }
+      else
+        {
+          printf ("%s", xy_strjoin (3, "测速 ", src.mirror->site , " ... "));
+          fflush (stdout);
+          speed = test_speed_url (url);
+        }
+      speeds[i] = speed;
+    }
 
-  if (onlyone)
-    chsrc_succ (xy_strjoin (4, sources[fastidx].mirror->name, " 是 ", target, " 目前唯一可用镜像站，感谢他们的慷慨支持"));
+  int fast_idx = get_max_ele_idx_in_dbl_ary (speeds, size);
+
+  if (only_one)
+    chsrc_succ (xy_strjoin (4, sources[fast_idx].mirror->name, " 是 ", target, " 目前唯一可用镜像站，感谢他们的慷慨支持"));
   else
-    puts (xy_2strjoin ("最快镜像站: ", xy_str_to_green (sources[fastidx].mirror->name)));
+    puts (xy_2strjoin ("最快镜像站: ", to_green (sources[fast_idx].mirror->name)));
 
-  return fastidx;
+  return fast_idx;
 }
 
 
@@ -445,7 +488,7 @@ chsrc_confirm_source (SourceInfo *source)
     }
   else
     {
-      puts (xy_strjoin (5, "选中镜像站: ", xy_str_to_green (source->mirror->abbr), " (", xy_str_to_green (source->mirror->code), ")"));
+      puts (xy_strjoin (5, "选中镜像站: ", to_green (source->mirror->abbr), " (", to_green (source->mirror->code), ")"));
     }
 
   split_between_source_changing_process;
@@ -477,7 +520,7 @@ chsrc_say_lastly (SourceInfo *source, const char *last_word)
             }
           else
             {
-              chsrc_log (xy_2strjoin ("全自动换源完成，感谢镜像提供方: ", xy_str_to_purple (source->mirror->name)));
+              chsrc_log (xy_2strjoin ("全自动换源完成，感谢镜像提供方: ", to_purple (source->mirror->name)));
             }
         }
       else
@@ -488,7 +531,7 @@ chsrc_say_lastly (SourceInfo *source, const char *last_word)
   else if (xy_streql (ChsrcTypeReset, last_word))
     {
       // source_is_upstream (source)
-      chsrc_log (xy_str_to_purple ("已重置为上游默认源"));
+      chsrc_log (to_purple ("已重置为上游默认源"));
     }
   else if (xy_streql (ChsrcTypeSemiAuto, last_word))
     {
@@ -500,14 +543,14 @@ chsrc_say_lastly (SourceInfo *source, const char *last_word)
             }
           else
             {
-              chsrc_log (xy_2strjoin ("半自动换源完成，仍需按上述提示手工操作，感谢镜像提供方: ", xy_str_to_purple (source->mirror->name)));
+              chsrc_log (xy_2strjoin ("半自动换源完成，仍需按上述提示手工操作，感谢镜像提供方: ", to_purple (source->mirror->name)));
             }
         }
       else
         {
           chsrc_log ("半自动换源完成，仍需按上述提示手工操作");
         }
-      chsrc_warn ("若您有完全自动化的换源方案，邀您帮助: chsrc issue");
+      chsrc_warn ("若您有更好的换源方案，邀您帮助: chsrc issue");
     }
   else if (xy_streql (ChsrcTypeManual, last_word))
     {
@@ -519,14 +562,14 @@ chsrc_say_lastly (SourceInfo *source, const char *last_word)
             }
           else
             {
-              chsrc_log (xy_2strjoin ("因实现约束需按上述提示手工操作，感谢镜像提供方: ", xy_str_to_purple (source->mirror->name)));
+              chsrc_log (xy_2strjoin ("因实现约束需按上述提示手工操作，感谢镜像提供方: ", to_purple (source->mirror->name)));
             }
         }
       else
         {
           chsrc_log ("因实现约束需按上述提示手工操作");
         }
-      chsrc_warn ("若您有完全自动化的换源方案，邀您帮助: chsrc issue");
+      chsrc_warn ("若您有更好的换源方案，邀您帮助: chsrc issue");
     }
   else if (xy_streql (ChsrcTypeUntested, last_word))
     {
@@ -538,7 +581,7 @@ chsrc_say_lastly (SourceInfo *source, const char *last_word)
             }
           else
             {
-              chsrc_log (xy_2strjoin ("感谢镜像提供方: ", xy_str_to_purple (source->mirror->name)));
+              chsrc_log (xy_2strjoin ("感谢镜像提供方: ", to_purple (source->mirror->name)));
             }
         }
       else
@@ -584,21 +627,24 @@ not_root:
 static void
 chsrc_run (const char *cmd, int run_option)
 {
-  xy_info_remarkably (App_Name, "运行", cmd);
+  xy_log_brkt (to_blue (App_Name), to_boldblue ("运行"), to_blue (cmd));
+
+  if (CliOpt_DryRun)
+    {
+      return; // Dry Run 此时立即结束，并不真正执行
+    }
+
   int status = system (cmd);
   if (0==status)
     {
       if (! (RunOpt_Dont_Notify_On_Success & run_option))
         {
-          xy_succ_remarkably (App_Name, "运行", "命令执行成功");
+          chsrc_log_cmd_result (true, status);
         }
     }
   else
     {
-      char buf[8] = {0};
-      sprintf (buf, "%d", status);
-      char *str = xy_2strjoin ("命令执行失败，返回码 ", buf);
-      xy_error_remarkably (App_Name, "运行", str);
+      chsrc_log_cmd_result (false, status);
       if (! (run_option & RunOpt_Dont_Abort_On_Failure))
         {
           chsrc_error ("关键错误，强制结束");
@@ -618,7 +664,7 @@ chsrc_view_file (const char *path)
 {
   char *cmd = NULL;
   path = xy_uniform_path (path);
-  if(xy_on_windows)
+  if (xy_on_windows)
     {
       cmd = xy_2strjoin ("type ", path);
     }
@@ -652,7 +698,7 @@ chsrc_ensure_dir (const char *dir)
   char *cmd = xy_2strjoin (mkdir_cmd, dir);
   cmd = xy_str_to_quietcmd (cmd);
   chsrc_run (cmd, RunOpt_No_Last_New_Line|RunOpt_Dont_Notify_On_Success);
-  chsrc_note_remarkably (xy_2strjoin ("目录不存在，已自动创建 ", dir));
+  chsrc_note2 (xy_2strjoin ("目录不存在，已自动创建 ", dir));
 }
 
 static void
@@ -720,7 +766,7 @@ chsrc_backup (const char *path)
 
   if (!exist)
     {
-      chsrc_note_remarkably (xy_2strjoin ("文件不存在,跳过备份: ", path));
+      chsrc_note2 (xy_2strjoin ("文件不存在,跳过备份: ", path));
       return;
     }
 
@@ -740,7 +786,7 @@ chsrc_backup (const char *path)
     }
 
   chsrc_run (cmd, RunOpt_No_Last_New_Line|RunOpt_Dont_Notify_On_Success);
-  chsrc_note_remarkably (xy_strjoin (3, "备份文件名为 ", path, ".bak"));
+  chsrc_note2 (xy_strjoin (3, "备份文件名为 ", path, ".bak"));
 }
 
 
