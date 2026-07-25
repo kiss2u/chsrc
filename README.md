@@ -9,18 +9,14 @@
  !               | @NewbieXvwu
  !               |
  ! Created On    : <2023-12-28>
- ! Last Modified : <2026-07-22>
+ ! Last Modified : <2026-07-25>
  ! ---------------------------------------------------------- -->
 
 <div align="center">
   <img alt="chsrc logo" src="doc/image/chsrc.png"/>
 </div>
 
-全平台通用换源工具与框架 `chsrc`，**目标支持 Linux, Windows (native, MSYS2, Cygwin), macOS, BSD, Android 等尽可能多的操作系统环境，龙芯、飞腾、RISC-V 等尽可能多的 CPU**。
-
-我们使用 **C11** 来完成上述目标。我们并不使用 Python 或 JavaScript 等解释语言，因为一个简单的换源工具，不应该强行塞给用户一个庞大的解释器和数十、数百 MB 其他文件。
-
-本软件为**自由软件**，SDPX 软件许可证为 `GPL-3.0-or-later and MIT`
+全平台通用换源工具与框架 `chsrc`，**目标支持 Linux, Windows (native, MSYS2, Cygwin), macOS, BSD, Android 等尽可能多的操作系统环境，龙芯、飞腾、RISC-V 等尽可能多的 CPU**。我们使用 **C11** 来完成上述目标，以保证最大的可用性。本软件为**自由软件**，SDPX 软件许可证为 `GPL-3.0-or-later and MIT`
 
 <br>
 
@@ -35,7 +31,7 @@
     <a href="https://hellogithub.com/repository/7666ba91e01e4a59be5809b02d9e8ff6" target="_blank"><img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=7666ba91e01e4a59be5809b02d9e8ff6&claim_uid=H6YVMUy7ulev8R4&theme=dark" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
   </td>
   <td>
-    <a href="https://atomgit.com/RubyMetric/chsrc"><img src="https://atomgit.com/RubyMetric/chsrc/star/badge.svg" /></a>
+    <a href="https://atomgit.com/RubyMetric/chsrc"><img src="https://atomgit.com/RubyMetric/chsrc/star/new_badge.svg" /></a>
   </td>
   </tr>
 </table>
@@ -50,9 +46,7 @@
 
 我为 `chsrc` 采用 GPL 协议，怀着殷切的期望：**希望能够营造像 Richard Stallman 在创建 GNU 项目之前，在 MIT 那样的氛围——写自己用得上的软件，与大家一起开发、维护，简单纯粹，无关商业利益。就像小区、校园自发组建的足球篮球队，从一次偶然的加入，逐渐成长为互相支持的伙伴**。
 
-这次经历让我更加深刻地体会到：开源，是一种把大家联系在一起的方式，**它让友情、互助和协作成为可能，也让我们在共同的目标中建立起长期的纽带**。
-
-最后，希望大家能够**时刻关注**自己的身体，**你可以随时 `chsrc` `chown` `chgrp` `chmod` 无限次，但是无法 `chbody`**！
+这次经历让我更加深刻地体会到：开源，是一种把大家联系在一起的方式，它让互助和协作成为可能。最后，希望大家能够**时刻关注**自己的身体，**你可以随时 `chsrc` `chown` `chgrp` `chmod` 无限次，但是无法 `chbody`**！
 
 <br>
 
@@ -86,39 +80,6 @@
 
 4. [chsrc-bootstrap: 为不存在预编译 `chsrc` 的平台提供支持](https://github.com/RubyMetric/chsrc/issues/230)
 
-<br>
-
-<details>
-<summary>已由贡献者完成的挑战</summary>
-
-1. [[Challenge] 编写统一安装的 shell 和 PowerShell 脚本](https://github.com/RubyMetric/chsrc/issues/98)
-
-    已由 [@Efterklang] 与 [@wickdynex] 完成
-
-</details>
-
-<details>
-<summary>镜像站可用性</summary>
-
-1. <https://github.com/RubyMetric/chsrc/wiki>
-2. <https://github.com/RubyMetric/chsrc/discussions>
-
-</details>
-
-<details>
-<summary>打包</summary>
-
-想通过 `dnf`, `flatpak`, `snap` 等系统包管理工具来安装和更新`chsrc`？若可提供维护，请访问 [issue#16 on GitHub](https://github.com/RubyMetric/chsrc/issues/16)
-
-- [x] `Homebrew`
-- [x] `Scoop`
-- [x] `WinGet`
-- [x] `AUR`
-- [ ] `Flatpak`
-- [ ] `snap`
-- [ ] 缺乏其他平台/包维护者
-
-</details>
 
 <br>
 
@@ -164,7 +125,7 @@ scoop install chsrc
 
 <br>
 
-- 可通过 `WinGet` 安装，感谢 [@YU-7]
+- 可通过 `WinGet` 安装，感谢 [@YU-7] 与 [@Dragon1573]
 
 ```bash
 winget install RubyMetric.chsrc
@@ -604,3 +565,4 @@ chsrc set conda  | anaconda
 [@wickdynex]:      https://github.com/wickdynex
 [@YU-7]:           https://github.com/YU-7
 [@sanchuanhehe]:   https://github.com/sanchuanhehe
+[@Dragon1573]:     https://github.com/Dragon1573

@@ -8,7 +8,7 @@
 #               | @NewbieXvwu
 #               |
 # Created On    : <2025-06-18>
-# Last Modified : <2026-07-22>
+# Last Modified : <2026-07-25>
 #
 # 该文件主要用于在原生Windows上执行项目的基本任务，而不借助于
 # GNU make 以及相应的 MSYS2、Cygwin 环境
@@ -47,9 +47,10 @@ DEBUGGER := if os() == 'windows' {
 	"gdb"
 }
 
+# just 不允许表达式内部写注释
+# arch() 返回当前架构 (x86_64 / aarch64)，以适配原生 WoA 环境
 CFLAGS_chk_Clang := if os() == 'windows' {
   if CC == 'clang' {
-    # arch() 返回当前架构 (x86_64 / aarch64)，以适配原生 WoA 环境
     '-target ' + arch() + '-pc-windows-gnu'
   } else {''}
 } else {''}
