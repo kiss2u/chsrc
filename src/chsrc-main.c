@@ -404,12 +404,6 @@ cli_print_target_features (Target_t *target, const char *input_target_name)
 void
 cli_print_target_maintain_info_briefly (Target_t *target, const char *input_target_name)
 {
-  if (target->sources_last_updated)
-    {
-      char *msg = ENGLISH ? "Ingredient(Sources) Last Updated: " : "食源检查: ";
-      printf ("%s%s  ", msg, purple(target->sources_last_updated));
-    }
-
   if (target->last_updated)
     {
       char *msg = ENGLISH ? "Recipe Last Updated: " : "食谱更新: ";
@@ -443,13 +437,7 @@ cli_print_target_maintain_info (Target_t *target, const char *input_target_name)
   if (target->last_updated)
     {
       char *msg = ENGLISH ? "Recipe Last Updated: " : "食谱更新: ";
-      printf ("%s%s ", bdblue(msg), target->last_updated);
-    }
-
-  if (target->sources_last_updated)
-    {
-      char *msg = ENGLISH ? "Ingredient(Sources) Last Updated: " : "食源检查: ";
-      printf ("%s%s\n", bdblue(msg), target->sources_last_updated);
+      printf ("%s%s\n", bdblue(msg), target->last_updated);
     }
 
   {

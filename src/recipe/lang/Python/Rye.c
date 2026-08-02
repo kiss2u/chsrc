@@ -13,7 +13,6 @@ pl_python_rye_prelude (void)
 
   chef_set_recipe_created_on   (this, "2024-12-06");
   chef_set_recipe_last_updated (this, "2025-08-09");
-  chef_set_sources_last_updated (this, "2025-08-09");
 
   chef_set_chefs (this, 1, "@ccmywish");
   chef_set_sauciers (this, 0);

@@ -11,7 +11,6 @@ os_gentoo_prelude ()
 
   chef_set_recipe_created_on   (this, "2023-09-05");
   chef_set_recipe_last_updated (this, "2025-08-10");
-  chef_set_sources_last_updated (this, "2025-06-20");
 
   chef_set_chefs (this, 1, "@G_I_Y");
   chef_set_sauciers (this, 1, "@ccmywish");

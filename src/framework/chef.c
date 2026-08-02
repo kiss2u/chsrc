@@ -492,15 +492,6 @@ chef_set_recipe_last_updated (Target_t *target, char *date)
 }
 
 
-void
-chef_set_sources_last_updated (Target_t *target, char *date)
-{
-  xy_cant_be_null (target);
-  xy_cant_be_null (date);
-
-  target->sources_last_updated = xy_strdup (date);
-}
-
 
 /**
  * @note 某些 target 需要修改 User-Agent

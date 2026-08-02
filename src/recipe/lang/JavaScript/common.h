@@ -18,7 +18,6 @@ pl_js_group_prelude (void)
 
   chef_set_recipe_created_on   (this, "2023-09-09");
   chef_set_recipe_last_updated (this, "2025-07-11");
-  chef_set_sources_last_updated (this, "2025-07-11");
 
   // 组换源的 leader target 应把所有 follower target 的贡献者都记录过来
   chef_set_chefs (this, 1, "@ccmywish");
@@ -55,7 +54,6 @@ pl_js_nodejs_binary_prelude (void)
 
   chef_set_recipe_created_on   (this, "2023-09-09");
   chef_set_recipe_last_updated (this, "2025-08-22");
-  chef_set_sources_last_updated (this, "2025-07-11");
 
   chef_set_chefs (this, 1, "@ccmywish");
   chef_set_sauciers (this, 0);

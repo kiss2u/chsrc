@@ -11,7 +11,6 @@ pl_java_prelude ()
 
   chef_set_recipe_created_on   (this, "2023-08-31");
   chef_set_recipe_last_updated (this, "2025-08-27");
-  chef_set_sources_last_updated (this, "2024-12-18");
 
   chef_set_chefs (this, 2, "@BingChunMoLi", "@ccmywish");
   chef_set_sauciers (this, 0);

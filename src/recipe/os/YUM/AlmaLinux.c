@@ -10,8 +10,7 @@ os_almalinux_prelude ()
   chef_prep_this (os_almalinux, s);
 
   chef_set_recipe_created_on   (this, "2024-06-12");
-  chef_set_recipe_last_updated (this, "2025-08-10");
-  chef_set_sources_last_updated (this, "2025-08-22");
+  chef_set_recipe_last_updated (this, "2025-08-22");
 
   chef_set_chefs (this, 1, "@ccmywish");
   chef_set_sauciers (this, 1, "@Yangmoooo");

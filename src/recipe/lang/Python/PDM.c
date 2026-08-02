@@ -11,7 +11,6 @@ pl_python_pdm_prelude (void)
 
   chef_set_recipe_created_on   (this, "2024-06-05");
   chef_set_recipe_last_updated (this, "2025-07-11");
-  chef_set_sources_last_updated (this, "2025-07-11");
 
   chef_set_chefs (this, 1, "@ccmywish");
   chef_set_sauciers (this, 0);

@@ -202,7 +202,6 @@ typedef struct Target_t
   /* recipe 维护信息 */
   char *created_on;
   char *last_updated;
-  char *sources_last_updated;
 
   XySeq_t *chefs;    /* 该 recipe 的主要作者   */
   XySeq_t *sauciers; /* 该 recipe 的次要贡献者 */

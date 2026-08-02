@@ -10,8 +10,7 @@ pl_rust_cargo_prelude (void)
   chef_prep_this (pl_rust_cargo, gsr);
 
   chef_set_recipe_created_on   (this, "2023-08-30");
-  chef_set_recipe_last_updated (this, "2025-12-31");
-  chef_set_sources_last_updated (this, "2026-03-21");
+  chef_set_recipe_last_updated (this, "2026-03-21");
 
   chef_set_chefs (this, 2, "@Mikachu2333", "@ccmywish");
   chef_set_sauciers (this, 2, "@happy-game", "@AnonTokio");
