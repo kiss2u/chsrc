@@ -4,7 +4,7 @@
 # Test Authors  : 曾奥然 <ccmywish@qq.com>
 # Contributors  : Nil Null <nil@null.org>
 # Created On    : <2024-06-05>
-# Last Modified : <2026-02-24>
+# Last Modified : <2026-08-02>
 #
 # 测试 chsrc 可执行文件
 # ---------------------------------------------------------------
@@ -145,14 +145,12 @@ my $set_ruby_abcd      = qr/镜像站.*不存在/;
 my $set_ruby_first     = qr/全自动换源完成, 感谢镜像提供方/;
 my $set_ruby           = qr/全自动换源完成, 感谢镜像提供方/;
 my $reset_ruby         = qr/选中镜像站.*Upstream.*已重置为上游默认源/s;
-my $set_ruby_rubychina = qr/Ruby China 社区/;
 my $set_ruby_locally   = qr/bundle config --local/;
 
 like `$CHSRC set ruby abcd 2>&1`,      $set_ruby_abcd,      'chsrc set ruby abcd';
 like `$CHSRC set ruby first`,          $set_ruby_first,     'chsrc set ruby first';
 like `$CHSRC set ruby`,                $set_ruby,           'chsrc set ruby';
 like `$CHSRC reset ruby`,              $reset_ruby,         'chsrc reset ruby';
-like `$CHSRC set ruby rubychina`,      $set_ruby_rubychina, 'chsrc set ruby rubychina';
 like `$CHSRC set -scope=project ruby first`,  $set_ruby_locally,  'chsrc set -scope=project ruby first';
 
 

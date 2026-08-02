@@ -1,7 +1,9 @@
 # Ruby 换源问题
 
-https://github.com/ustclug/discussions/issues/438
+<https://github.com/ustclug/discussions/issues/438>
 
+
+- Ruby China: 于2026年7月21日暂停服务 (<https://ruby-china.org/topics/44619>)
 
 - 清华、北京外国语: 不可用，原因是: 实现不足 https://github.com/tuna/issues/issues/374
 

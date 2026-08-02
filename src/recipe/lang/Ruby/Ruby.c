@@ -18,7 +18,7 @@ pl_ruby_prelude (void)
 
   chef_set_recipe_created_on   (this, "2023-08-29");
   chef_set_recipe_last_updated (this, "2025-08-11");
-  chef_set_sources_last_updated (this, "2024-12-18");
+  chef_set_sources_last_updated (this, "2026-08-02");
 
   chef_set_chef (this, "@ccmywish");
   chef_set_cooks (this, 1, "@ccmywish");
@@ -35,8 +35,12 @@ pl_ruby_prelude (void)
 
   def_sources_begin()
   {&UpstreamProvider, "https://rubygems.org/",        "https://rubygems.org/gems/nokogiri-1.15.0-java.gem"},
-  {&RubyChina,        "https://gems.ruby-china.com/",                   DelegateToMirror},
+
+  // https://ruby-china.org/topics/44619
+  // {&RubyChina,        "https://gems.ruby-china.com/",                   DelegateToMirror},
+
   {&Ustc,             "https://mirrors.ustc.edu.cn/rubygems/",          DelegateToMirror}
+
   // {&Tuna,          "https://mirrors.tuna.tsinghua.edu.cn/rubygems/", DelegateToMirror},
   // {&Bfsu,          "https://mirrors.bfsu.edu.cn/rubygems/",          DelegateToMirror},
 

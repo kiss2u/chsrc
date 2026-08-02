@@ -1,13 +1,13 @@
 /** ------------------------------------------------------------
  * SPDX-License-Identifier: GPL-3.0-or-later
  * -------------------------------------------------------------
- * File Authors   : 曾奥然 <ccmywish@qq.com>
- * Contributors   : Mikachu2333 <mikachu.23333@zohomail.com>
- *                | BingChunMoLi <bingchunmoli@bingchunmoli.com>
+ * File Authors   : @ccmywish
+ * Contributors   : @Mikachu2333
+ *                | @BingChunMoLi
  *                |
  * Created On     : <2023-09-01>
  * Major Revision :      5
- * Last Modified  : <2025-08-22>
+ * Last Modified  : <2026-08-02>
  * ------------------------------------------------------------*/
 
 #include "lang/rawstr4c.h"
@@ -217,7 +217,8 @@ chsrc_available_mirrors[] = {
 
 
   /* ------------------------ 专用镜像站 ------------------------ */
-  &RubyChina, &EmacsChina, &NpmMirror, &GoProxyIO, &GoProxyCN, &RsProxyCN, &FlutterCN,
+  &RubyChina, // Ruby China 镜像站实际上已于2026年7月21日停用，但由于其是持续数十年的由社区维护驱动的镜像站，我们保留表示致敬
+  &EmacsChina, &NpmMirror, &GoProxyIO, &GoProxyCN, &RsProxyCN, &FlutterCN,
   /* 暂不支持 &NugetOrg */
 
 
