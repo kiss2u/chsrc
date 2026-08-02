@@ -13,8 +13,7 @@ pl_java_prelude ()
   chef_set_recipe_last_updated (this, "2025-08-27");
   chef_set_sources_last_updated (this, "2024-12-18");
 
-  chef_set_chef (this, NULL);
-  chef_set_cooks (this, 2, "@BingChunMoLi", "@ccmywish");
+  chef_set_chefs (this, 2, "@BingChunMoLi", "@ccmywish");
   chef_set_sauciers (this, 0);
 
   chef_set_scope_cap (this, ProjectScope, ScopeCap_Unknown);

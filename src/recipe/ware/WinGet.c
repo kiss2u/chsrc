@@ -13,8 +13,7 @@ wr_winget_prelude ()
   chef_set_recipe_last_updated (this, "2025-08-17");
   chef_set_sources_last_updated (this, "2025-07-13");
 
-  chef_set_chef (this, NULL);
-  chef_set_cooks (this, 1, "@ccmywish");
+  chef_set_chefs (this, 1, "@ccmywish");
   chef_set_sauciers (this, 1, "@Mikachu2333");
 
   chef_set_scope_cap (this, ProjectScope, ScopeCap_Unable);

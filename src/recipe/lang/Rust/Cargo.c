@@ -13,8 +13,7 @@ pl_rust_cargo_prelude (void)
   chef_set_recipe_last_updated (this, "2025-12-31");
   chef_set_sources_last_updated (this, "2026-03-21");
 
-  chef_set_chef (this, NULL);
-  chef_set_cooks (this, 2, "@Mikachu2333", "@ccmywish");
+  chef_set_chefs (this, 2, "@Mikachu2333", "@ccmywish");
   chef_set_sauciers (this, 2, "@happy-game", "@AnonTokio");
 
   chef_set_scope_cap (this, ProjectScope, ScopeCap_Able_But_Not_Implemented);

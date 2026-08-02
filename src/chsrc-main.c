@@ -416,7 +416,7 @@ cli_print_target_maintain_info_briefly (Target_t *target, const char *input_targ
       printf ("%s%s  ", msg, purple(target->last_updated));
     }
 
-  char num[32]; sprintf(num, "%d", target->cooks_n + target->sauciers_n);
+  char num[32]; sprintf(num, "%d", xy_seq_len(target->chefs) + xy_seq_len(target->sauciers));
   char *msg = ENGLISH ? "Contributors: " : "后厨人数: ";
   printf ("%s%s  ", msg, purple(num));
 
@@ -453,51 +453,37 @@ cli_print_target_maintain_info (Target_t *target, const char *input_target_name)
     }
 
   {
-    char *msg = ENGLISH ? "Current Chef: " : "品控: ";
-    if (target->chef)
-      {
-        printf ("%s%s <%s>\n", bdblue(msg),
-                target->chef->name  ? target->chef->name  : "Unknown",
-                target->chef->email ? target->chef->email : "unknown@example.com");
-      }
-    else
-      {
-        char *msg1 = CHINESE ? "该 recipe 的负责人暂空缺, 欢迎担任" : "Vacant, Welcome to hold the position";
-        printf ("%s%s\n", bdblue(msg), bdgreen(msg1));
-      }
-  }
-
-
-  {
-    char *msg = ENGLISH ? "Cooks: " : "掌勺: ";
-    if (target->cooks && target->cooks_n > 0)
+    char *msg = ENGLISH ? "Chefs: " : "主厨: ";
+    if (target->chefs && xy_seq_len(target->chefs) > 0)
       {
         printf ("%s", bdblue(msg));
-        for (size_t i = 0; i < target->cooks_n; i++)
+        for (size_t i = 1; i <= xy_seq_len(target->chefs); i++)
           {
-            if (i > 0) printf (", ");
+            if (i > 1) printf (", ");
+            Contributor_t *chef = xy_seq_at (target->chefs, i);
             printf ("%s <%s>",
-                    target->cooks[i]->name  ? target->cooks[i]->name : "Unknown",
-                    target->cooks[i]->email ? target->cooks[i]->email : "unknown@example.com");
+                    chef->name  ? chef->name : "Unknown",
+                    chef->email ? chef->email : "unknown@example.com");
           }
         printf ("\n");
       }
     else
       {
-        char *msg1 = CHINESE ? "暂空缺, 欢迎担任" : "Vacant, Welcome to hold the position";
+        char *msg1 = CHINESE ? "暂空缺, 欢迎参与贡献" : "Vacant, Welcome to contribute!";
         printf ("%s%s\n", bdblue(msg), bdgreen(msg1));
       }
   }
 
   {
     char *msg = ENGLISH ? "Sauciers: " : "调味: ";
-    if (target->sauciers && target->sauciers_n > 0)
+    if (target->sauciers && xy_seq_len(target->sauciers) > 0)
       {
         printf ("%s", bdblue(msg));
-        for (size_t i = 0; i < target->sauciers_n; i++)
+        for (size_t i = 1; i <= xy_seq_len(target->sauciers); i++)
           {
-            if (i > 0) printf (", ");
-            printf ("%s <%s>", target->sauciers[i]->name, target->sauciers[i]->email );
+            if (i > 1) printf (", ");
+            Contributor_t *saucier = xy_seq_at (target->sauciers, i);
+            printf ("%s <%s>", saucier->name, saucier->email );
           }
         br();
       }

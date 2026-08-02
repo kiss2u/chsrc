@@ -13,8 +13,7 @@ os_openwrt_prelude ()
   chef_set_recipe_last_updated (this, "2025-08-10");
   chef_set_sources_last_updated (this, "2024-12-14");
 
-  chef_set_chef (this, NULL);
-  chef_set_cooks (this, 1, "@ccmywish");
+  chef_set_chefs (this, 1, "@ccmywish");
   chef_set_sauciers (this, 2, "@Yangmoooo", "@happy-game");
 
   chef_set_os_scope (this);

@@ -13,8 +13,7 @@ pl_python_uv_prelude (void)
   chef_set_recipe_last_updated (this, "2025-12-29");
   chef_set_sources_last_updated (this, "2025-08-09");
 
-  chef_set_chef (this, NULL);
-  chef_set_cooks (this, 2, "@happy-game", "@MingriLingran");
+  chef_set_chefs (this, 2, "@happy-game", "@MingriLingran");
   chef_set_sauciers (this, 2, "@Kattos", "@ccmywish");
 
   chef_set_scope_cap (this, ProjectScope, ScopeCap_Able_And_Implemented);

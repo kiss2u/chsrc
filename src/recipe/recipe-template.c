@@ -6,7 +6,7 @@
  * Contributors  : Mikachu2333 <mikachu.23333@zohomail.com>
  *               |
  * Created On    : <2024-08-09>
- * Last Modified : <2026-02-24>
+ * Last Modified : <2026-08-02>
  * -------------------------------------------------------------
  * 本文件作为一个通用模板：
  *
@@ -63,10 +63,8 @@ void
 
   chef_set_recipe_created_on   (this, "2024-08-09"); // 文件创建日期
   chef_set_recipe_last_updated (this, "2025-08-12"); // 文件最后一次更新日期
-  chef_set_sources_last_updated (this, "2025-08-11"); // 镜像源最后一次更新日期
 
-  chef_set_chef (this, "@ccmywish");                  // recipe 负责人
-  chef_set_cooks (this, 2, "@ccmywish", "@nilnull");  // recipe 核心作者
+  chef_set_chefs (this, 2, "@ccmywish", "@nilnull");  // recipe 主要作者
   // 做了贡献？将自己的信息加在这里！
   chef_set_sauciers (this, 2, "@nulnone", "@someone");
 

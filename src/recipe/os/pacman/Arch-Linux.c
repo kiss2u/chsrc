@@ -16,8 +16,7 @@ os_arch_prelude ()
   chef_set_recipe_last_updated (this, "2025-10-30");
   chef_set_sources_last_updated (this, "2025-06-20");
 
-  chef_set_chef (this, "@happy-game");
-  chef_set_cooks (this, 2, "@ccmywish", "@G_I_Y");
+  chef_set_chefs (this, 2, "@ccmywish", "@G_I_Y");
   chef_set_sauciers (this, 2, "@happy-game", "@Young-Lord");
 
   chef_set_os_scope (this);
@@ -119,8 +118,7 @@ os_archlinuxcn_prelude ()
   chef_set_recipe_last_updated (this, "2025-09-12");
   chef_set_sources_last_updated (this, "2024-07-03");
 
-  chef_set_chef (this, NULL);
-  chef_set_cooks (this, 2, "@ccmywish", "@G_I_Y");
+  chef_set_chefs (this, 2, "@ccmywish", "@G_I_Y");
   chef_set_sauciers (this, 2, "@happy-game", "@Young-Lord");
 
   chef_set_os_scope (this);

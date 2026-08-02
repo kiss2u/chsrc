@@ -14,8 +14,7 @@ os_ubuntu_prelude ()
   chef_set_recipe_last_updated (this, "2026-06-26");
   chef_set_sources_last_updated (this, "2026-01-21");
 
-  chef_set_chef (this, NULL);
-  chef_set_cooks (this, 2, "@ccmywish", "@G_I_Y");
+  chef_set_chefs (this, 2, "@ccmywish", "@G_I_Y");
   chef_set_sauciers (this, 3, "@XUANJI233", "@usernameisnull", "@wcbing");
 
   chef_set_os_scope (this);

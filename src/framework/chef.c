@@ -5,7 +5,7 @@
  * File Authors  : @ccmywish
  * Contributors  : @BingChunMoLi
  * Created On    : <2025-08-09>
- * Last Modified : <2026-02-24>
+ * Last Modified : <2026-08-02>
  *
  * chef DSL: for chefs (recipe makers) to define a target
  * ------------------------------------------------------------*/
@@ -35,11 +35,8 @@ chef_debug_target (Target_t *target)
   printf ("  Sources: %p\n", target->sources);
   printf ("  Sources Count: %d\n", target->sources_n);
 
-  printf ("  Chef: %p\n", target->chef);
-  printf ("  Cooks: %p\n", target->cooks);
-  printf ("  Cooks Count: %d\n", target->cooks_n);
-  printf ("  Sauciers: %p\n", target->sauciers);
-  printf ("  Sauciers Count: %d\n", target->sauciers_n);
+  printf ("  Chefs Count: %d\n", xy_seq_len(target->chefs));
+  printf ("  Sauciers Count: %d\n", xy_seq_len(target->sauciers));
 #endif
 }
 
@@ -421,50 +418,30 @@ chef_verify_contributor (const char *id)
 }
 
 
-/**
- * @brief 设置 Chef (recipe 负责人)
- */
-void
-chef_set_chef (Target_t *target, const char *id)
-{
-  xy_cant_be_null (target);
-
-  /* Chef 可为空 */
-  if (!id)
-    {
-      target->chef = NULL;
-      return;
-    }
-
-  Contributor_t *c = chef_verify_contributor (id);
-  target->chef = c;
-}
-
 
 /**
- * @brief 设置 Cooks (recipe 核心作者)
+ * @brief 设置 Chefs (recipe 主要作者)
  */
 void
-chef_set_cooks (Target_t *target, size_t count, ...)
+chef_set_chefs (Target_t *target, size_t count, ...)
 {
   xy_cant_be_null (target);
 
   if (count == 0)
     {
-      chsrc_panic ("recipe 一定至少有1位作者(cooks)");
+      chsrc_panic ("recipe 一定至少有1位主要作者(chefs)");
       return;
     }
 
   va_list args;
   va_start (args, count);
 
-  target->cooks = xy_malloc0 (count * sizeof (Contributor_t*));
-  target->cooks_n = count;
+  target->chefs = xy_seq_new ();
 
   for (size_t i = 0; i < count; i++)
     {
       char *id = va_arg (args, char*);
-      target->cooks[i] = chef_verify_contributor (id);
+      xy_seq_push (target->chefs, chef_verify_contributor (id));
     }
 
   va_end (args);
@@ -475,24 +452,22 @@ chef_set_sauciers (Target_t *target, uint32_t count, ...)
 {
   xy_cant_be_null (target);
 
+  target->sauciers = xy_seq_new ();
+
   if (count == 0)
     {
-      target->sauciers = NULL;
-      target->sauciers_n = 0;
       return;
     }
 
   va_list args;
   va_start (args, count);
 
-  target->sauciers = xy_malloc0 (count * sizeof (Contributor_t*));
-  target->sauciers_n = count;
-
   for (uint32_t i = 0; i < count; i++)
     {
       char *id = va_arg (args, char*);
-      target->sauciers[i] = chef_verify_contributor (id);
+      xy_seq_push (target->sauciers, chef_verify_contributor (id));
     }
+  va_end (args);
 }
 
 

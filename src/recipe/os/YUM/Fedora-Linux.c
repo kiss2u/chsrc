@@ -13,8 +13,7 @@ os_fedora_prelude ()
   chef_set_recipe_last_updated (this, "2025-08-10");
   chef_set_sources_last_updated (this, "2025-06-20");
 
-  chef_set_chef (this, "@happy-game");
-  chef_set_cooks (this, 2, "@G_I_Y", "@happy-game");
+  chef_set_chefs (this, 2, "@G_I_Y", "@happy-game");
   chef_set_sauciers (this, 1, "@ccmywish");
 
   chef_set_os_scope (this);

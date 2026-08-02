@@ -13,8 +13,7 @@ os_openbsd_prelude ()
   chef_set_recipe_last_updated (this, "2025-08-10");
   chef_set_sources_last_updated (this, "2025-07-31");
 
-  chef_set_chef (this, NULL);
-  chef_set_cooks (this, 2, "@G_I_Y", "@ccmywish");
+  chef_set_chefs (this, 2, "@G_I_Y", "@ccmywish");
   chef_set_sauciers (this, 1, "@hezonglun");
 
   chef_set_os_scope (this);

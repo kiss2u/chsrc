@@ -13,8 +13,7 @@ os_armbian_prelude ()
   chef_set_recipe_last_updated (this, "2025-08-10");
   chef_set_sources_last_updated (this, "2024-11-21");
 
-  chef_set_chef (this, NULL);
-  chef_set_cooks (this, 1, "@livelycode36");
+  chef_set_chefs (this, 1, "@livelycode36");
   chef_set_sauciers (this, 2, "@ccmywish", "@Yangmoooo");
 
   chef_set_os_scope (this);

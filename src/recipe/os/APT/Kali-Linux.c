@@ -13,8 +13,7 @@ os_kali_prelude ()
   chef_set_recipe_last_updated (this, "2026-05-22");
   chef_set_sources_last_updated (this, "2026-05-22");
 
-  chef_set_chef (this, NULL);
-  chef_set_cooks (this, 1, "@G_I_Y");
+  chef_set_chefs (this, 1, "@G_I_Y");
   chef_set_sauciers (this, 3, "@Yangmoooo", "@happy-game", "@ccmywish");
 
   chef_set_os_scope (this);

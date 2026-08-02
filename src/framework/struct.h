@@ -7,7 +7,7 @@
  * Contributors  : @livelycode36
  *               |
  * Created On    : <2023-08-29>
- * Last Modified : <2026-02-24>
+ * Last Modified : <2026-08-02>
  *
  * chsrc struct
  * ------------------------------------------------------------*/
@@ -204,11 +204,8 @@ typedef struct Target_t
   char *last_updated;
   char *sources_last_updated;
 
-  Contributor_t  *chef;     /* 该 recipe *当前*的总负责人 (可以任职也可以休职) */
-  Contributor_t **cooks;    /* 该 recipe 的主要作者 */
-            int   cooks_n;
-  Contributor_t **sauciers; /* 该 recipe 的次要贡献者 (除主要作者外的其他人) */
-            int   sauciers_n;
+  XySeq_t *chefs;    /* 该 recipe 的主要作者   */
+  XySeq_t *sauciers; /* 该 recipe 的次要贡献者 */
 }
 Target_t;
 

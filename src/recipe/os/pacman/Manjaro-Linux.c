@@ -12,8 +12,7 @@ os_manjaro_prelude ()
   chef_set_recipe_created_on   (this, "2023-09-06");
   chef_set_recipe_last_updated (this, "2025-08-10");
 
-  chef_set_chef (this, NULL);
-  chef_set_cooks (this, 1, "@G_I_Y");
+  chef_set_chefs (this, 1, "@G_I_Y");
   chef_set_sauciers (this, 0);
 
   chef_set_os_scope (this);

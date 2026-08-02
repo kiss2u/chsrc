@@ -9,7 +9,7 @@
  !               | @NewbieXvwu
  !               |
  ! Created On    : <2023-12-28>
- ! Last Modified : <2026-07-25>
+ ! Last Modified : <2026-08-02>
  ! ---------------------------------------------------------- -->
 
 <div align="center">
@@ -67,19 +67,6 @@
 
 > [!IMPORTANT]
 > **`chsrc` 可换源 65+ 目标。每个人仅仅贡献和维护自己熟悉的部分，回报是得到其他所有领域专家的帮助。** [欢迎成为 recipe 维护者](https://github.com/RubyMetric/chsrc/issues/275)
-
-<br>
-
-可参与的任务与挑战：
-
-1. [Shell auto-completion 终端命令自动补全](https://github.com/RubyMetric/chsrc/issues/204)
-
-2. [搜集默认源地址，帮助使用 `reset` 功能](https://github.com/RubyMetric/chsrc/issues/111)
-
-3. [搜集测速地址，进行精准测速](https://github.com/RubyMetric/chsrc/issues/205)
-
-4. [chsrc-bootstrap: 为不存在预编译 `chsrc` 的平台提供支持](https://github.com/RubyMetric/chsrc/issues/230)
-
 
 <br>
 
