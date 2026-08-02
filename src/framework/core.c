@@ -132,6 +132,7 @@ ProgStatus =
 /* Global Program Store */
 struct
 {
+  XySeq_t *mirror_sites;
   XySeq_t *pl;
   XySeq_t *os;
   XySeq_t *wr;
@@ -139,6 +140,7 @@ struct
 }
 ProgStore =
 {
+  .mirror_sites = NULL,
   .pl = NULL,
   .os = NULL,
   .wr = NULL,
@@ -221,6 +223,8 @@ chsrc_init_framework ()
   xy_init ();
 
   ProgStore.contributors = xy_map_new ();
+
+  ProgStore.mirror_sites = xy_seq_new ();
   ProgStore.pl = xy_seq_new ();
   ProgStore.os = xy_seq_new ();
   ProgStore.wr = xy_seq_new ();

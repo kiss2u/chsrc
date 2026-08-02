@@ -97,16 +97,16 @@ chsrc_register_contributors ()
 
 
 void
-cli_print_available_mirrors ()
+cli_print_all_mirror_sites ()
 {
   {
   char *msg = ENGLISH ? "To specify a source, use chsrc set " : "指定使用某源，请使用 chsrc set ";
-  say (bdblue(xy_strcat (3, msg, "<target>", " <code>\n")));
+  println (bdblue(xy_strcat (3, msg, "<target>", " <code>\n")));
   }
 
   {
   char *msg = ENGLISH ? "Available Mirror Sites: \n" : "可用镜像站: \n";
-  say (bdgreen(msg));
+  println (bdgreen(msg));
   }
 
   {
@@ -115,13 +115,13 @@ cli_print_available_mirrors ()
   char *msg3 = ENGLISH ? "Mirror Name" : "镜像站";
   char *format = ENGLISH ? "  %-13s%-28s%-35s%s\n" : "  %-13s%-33s%-42s%s\n";
   printf (format, "code", msg1, msg2, msg3);
-  say    ("---------    --------------    -------------------------------------     ---------------------");
+  println ("---------    --------------    -------------------------------------     ---------------------");
   }
 
-  for (int i = 0; i < xy_c_array_len (chsrc_available_mirrors); i++)
+  for (int i=1; i<=xy_seq_len(ProgStore.mirror_sites); i++)
     {
-      MirrorSite_t *mir = chsrc_available_mirrors[i];
-      printf ("%-14s%-18s%-41s ", mir->code, mir->abbr, mir->site); say (mir->name);
+      MirrorSite_t *mir = xy_seq_at(ProgStore.mirror_sites, i);
+      printf ("  %-13s%-28s%-35s%s\n", mir->code, mir->abbr, mir->site, mir->name);
     }
 }
 
@@ -929,7 +929,7 @@ main (int argc, char const *argv[])
     {
       if (argc < cli_arg_Target_pos)
         {
-          cli_print_available_mirrors ();
+          cli_print_all_mirror_sites ();
           br();
           cli_print_supported_targets ();
         }
@@ -939,7 +939,7 @@ main (int argc, char const *argv[])
           if (   xy_streql (target, "mirrors")
               || xy_streql (target, "mirror"))
             {
-              cli_print_available_mirrors ();
+              cli_print_all_mirror_sites ();
               return Exit_OK;
             }
 

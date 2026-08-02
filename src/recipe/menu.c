@@ -6,7 +6,7 @@
  *                | @BingChunMoLi
  *                |
  * Created On     : <2023-09-01>
- * Major Revision :      5
+ * Major Revision :      6
  * Last Modified  : <2026-08-02>
  * ------------------------------------------------------------*/
 
@@ -108,6 +108,51 @@
 void
 chsrc_init_menu ()
 {
+/* @sync https://github.com/RubyMetric/chsrc/wiki */
+#define add(t) xy_seq_push(ProgStore.mirror_sites, &t)
+
+  /* ------------------------ 教育网(通用镜像站) ------------------------ */
+  add(MirrorZ);
+  add(Tuna);
+  add(Sjtug_Zhiyuan); add(Sjtug_Siyuan);
+  add(Bfsu);
+  add(Ustc);
+  add(Zju);
+  add(Jlu);
+  add(Lzuoss);
+  add(Pku);
+  add(Bjtu);
+  add(Sustech);
+  add(Nju);
+  add(Xjtu);
+  add(Hust);   add(Iscas); add(Hit); add(Scau);
+  add(NJTech); add(Nyist); add(Sdu); add(Qlu);
+  add(Cqupt);  add(Cqu);   add(Neosoft);
+
+  /* ------------------------ 商业公司(通用镜像站) ------------------------ */
+  add(Ali);     // add(Ali_ECS_VPC); add(Ali_ECS_classic);
+  add(Tencent); // add(Tencent_Intra);
+  add(Huawei); add(HuaweiCDN);
+  add(Volcengine);
+  add(Netease);
+  add(Sohu);
+
+  add(Api7); add(Fit2Cloud); add(DaoCloud);
+
+
+  /* ------------------------ 专用镜像站 ------------------------ */
+  add(RubyChina); // Ruby China 镜像站实际上已于2026年7月21日停用，但由于其是持续数十年的由社区维护驱动的镜像站，我们保留表示致敬
+  add(EmacsChina);
+  add(NpmMirror); add(GoProxyIO); add(GoProxyCN); add(RsProxyCN); add(FlutterCN);
+  /* 暂不支持 &NugetOrg */
+
+
+  /* ------------------------ chsrc 内部实现 ------------------------ */
+  /* 不要列出 UpstreamProvider 和 UserDefinedProvider */
+#undef add
+
+
+
 #define add(t) xy_seq_push(ProgStore.pl, &pl_##t##_target); (&pl_##t##_target)->preludefn = pl_##t##_prelude
   add (ruby);
   add (python_group);
@@ -188,40 +233,3 @@ chsrc_init_menu ()
   // Internal Target 不会由用户使用，需要特殊对待
   pl_js_nodejs_binary_target.preludefn = pl_js_nodejs_binary_prelude;
 }
-
-
-
-/**
- * @sync https://github.com/RubyMetric/chsrc/wiki
- */
-static MirrorSite_t*
-chsrc_available_mirrors[] = {
-
-  /* ------------------------ 教育网(通用镜像站) ------------------------ */
-  &MirrorZ, &Tuna, &Sjtug_Zhiyuan, &Sjtug_Siyuan, &Bfsu, &Ustc, &Zju, &Jlu, &Lzuoss, &Pku, &Bjtu, &Sustech, &Nju, &Xjtu,
-
-  &Hust,   &Iscas, &Hit, &Scau,
-  &NJTech, &Nyist, &Sdu, &Qlu,
-  &Cqupt,  &Cqu,   &Neosoft,
-
-
-  /* ------------------------ 商业公司(通用镜像站) ------------------------ */
-  &Ali,     // &Ali_ECS_VPC, &Ali_ECS_classic,
-  &Tencent, // &Tencent_Intra,
-  &Huawei, &HuaweiCDN,
-  &Volcengine,
-  &Netease,
-  &Sohu,
-
-  &Api7, &Fit2Cloud, &DaoCloud,
-
-
-  /* ------------------------ 专用镜像站 ------------------------ */
-  &RubyChina, // Ruby China 镜像站实际上已于2026年7月21日停用，但由于其是持续数十年的由社区维护驱动的镜像站，我们保留表示致敬
-  &EmacsChina, &NpmMirror, &GoProxyIO, &GoProxyCN, &RsProxyCN, &FlutterCN,
-  /* 暂不支持 &NugetOrg */
-
-
-  /* ------------------------ chsrc 内部实现 ------------------------ */
-  /* 不要列出 &UpstreamProvider 和 &UserDefinedProvider */
-};
