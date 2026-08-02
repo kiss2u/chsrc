@@ -12,7 +12,7 @@
  *               | @NewbieXvwu
  *               |
  * Created On    : <2023-08-29>
- * Last Modified : <2026-07-21>
+ * Last Modified : <2026-08-02>
  *
  * chsrc framework
  * ------------------------------------------------------------*/
@@ -568,11 +568,30 @@ query_mirror_exist (Source_t *sources, size_t size, char *target_name, char *inp
     }
   if (!exist)
     {
-      {
-        char *msg1 = ENGLISH ? "Mirror site "   : "镜像站 ";
-        char *msg2 = ENGLISH ? " doesn't exist" : " 不存在";
-        chsrc_error (xy_strcat (3, msg1, input, msg2));
-      }
+      bool mirror_site_exist = false;
+      for (int i=1; i<=xy_seq_len(ProgStore.mirror_sites); i++)
+        {
+          MirrorSite_t *mir = xy_seq_at (ProgStore.mirror_sites, i);
+          if (xy_streql_ic (mir->code, input))
+            {
+              mirror_site_exist = true;
+              break;
+            }
+        }
+
+      if (mirror_site_exist)
+        {
+          char *msg1 = ENGLISH ? "Mirror site "   : "镜像站 ";
+          char *msg2 = ENGLISH ? " exists, but is not available for this software" : " 存在，但未提供该软件源";
+          chsrc_error (xy_strcat (3, msg1, input, msg2));
+          exit (Exit_UserCause);
+        }
+      else
+        {
+          char *msg1 = ENGLISH ? "Mirror site "   : "镜像站 ";
+          char *msg2 = ENGLISH ? " doesn't exist" : " 不存在";
+          chsrc_error (xy_strcat (3, msg1, input, msg2));
+        }
 
       char *msg = ENGLISH ? "To see available sources, use chsrc list " : "查看可使用源，请使用 chsrc list ";
       chsrc_error (xy_2strcat (msg, target_name));
