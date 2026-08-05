@@ -24,11 +24,6 @@
  * 所有函数均为 static, 依赖调用方所在翻译单元提供 stdlib/string.h。
  * ------------------------------------------------------------*/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-
 /**
  * @brief 判断行首是否以 key 作为键开始。
  *

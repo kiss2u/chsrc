@@ -19,8 +19,8 @@ pl_python_uv_prelude (void)
   chef_set_recipe_created_on   (this, "2024-12-11");
   chef_set_recipe_last_updated (this, "2026-08-02");
 
-  chef_set_chefs (this, 2, "@happy-game", "@MingriLingran");
-  chef_set_sauciers (this, 3, "@Kattos", "@ccmywish", "@Mikachu2333");
+  chef_set_chefs (this, 3, "@happy-game", "@MingriLingran", "@Mikachu2333");
+  chef_set_sauciers (this, 2, "@Kattos", "@ccmywish");
 
   chef_set_scope_cap (this, ProjectScope, ScopeCap_Able_And_Implemented);
   chef_set_scope_cap (this, UserScope,    ScopeCap_Able_And_Implemented);

@@ -62,7 +62,7 @@ chsrc_register_contributors ()
   chef_register_contributor ("@XUANJI233",      "XUANJI233",      "xuanji233@outlook.com",          NULL);
   chef_register_contributor ("@Yangmoooo",      "Yangmoooo",      "yangmoooo@outlook.com",          NULL);
   chef_register_contributor ("@zouri",          "Zouri",          "guoshuaisun@outlook.com",        NULL);
-  chef_register_contributor ("@xyx1926885268",  "Yongxiang",      "1926885268@qq.com",              NULL);
+  chef_register_contributor ("@ReachForStar",  "徐永祥",          "1926885268@qq.com",              NULL);
   chef_register_contributor ("@YU-7",           "YU-7",           "2747046473@qq.com",              NULL);
   chef_register_contributor ("@juzeon",         "juzeon",         "skyjuzheng@gmail.com",           NULL);
   chef_register_contributor ("@jialinlvcn",     "Jialin Lyu",     "jialinlvcn@aliyun.com",          NULL);

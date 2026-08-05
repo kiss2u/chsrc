@@ -38,7 +38,7 @@ pl_python_group_prelude (void)
 
   // 组换源的 leader target 应把所有 follower target 的贡献者都记录过来
   chef_set_chefs (this, 2, "@ccmywish", "@happy-game");
-  chef_set_sauciers (this, 4, "@xyx1926885268", "@Kattos", "@Mikachu2333", "@Yangmoooo");
+  chef_set_sauciers (this, 4, "@ReachForStar", "@Kattos", "@Mikachu2333", "@Yangmoooo");
 
   /* 部分包管理器支持 ProjectScope，但是为了让流程执行下去，我们这里都写 ScopeCap_Able_And_Implemented */
   chef_set_scope_cap (this, ProjectScope, ScopeCap_Able_And_Implemented);
